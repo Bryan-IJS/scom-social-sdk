@@ -60,6 +60,7 @@ export interface IMarketplaceProduct {
     reservations?: IMarketplaceReservation[];
 }
 export interface IMarketplaceReservation {
+    parentProductId: string;
     id: string;
     time: number;
     providerName: string;
