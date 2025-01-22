@@ -68,7 +68,8 @@ export interface IMarketplaceProduct {
 }
 
 export interface IMarketplaceReservation {
-	id: string;
+	parentProductId: string;
+	id: string; //product variant id
 	time: number;
 	providerName: string;
 	serviceName: string;

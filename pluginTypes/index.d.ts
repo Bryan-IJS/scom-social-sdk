@@ -1772,6 +1772,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         reservations?: IMarketplaceReservation[];
     }
     export interface IMarketplaceReservation {
+        parentProductId: string;
         id: string;
         time: number;
         providerName: string;
