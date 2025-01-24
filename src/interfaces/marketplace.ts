@@ -80,6 +80,14 @@ export interface IMarketplaceReservation {
 	capacity?: number;
 }
 
+export interface IReservation {
+	orderId: string;
+	serviceId: string;
+	providerPubkey: string;
+	userPubkey: string;
+	reservationTime: number;
+}
+
 export interface IMarketplaceWorkingHours {
 	checked?: boolean;
 	startTime?: number;
@@ -138,6 +146,7 @@ export interface IMarketplaceOrderItem {
 	productName?: string;
 	quantity: number;
 	price?: number;
+	reservationTime?: number;
 }
 
 export interface IMarketplaceOrder {

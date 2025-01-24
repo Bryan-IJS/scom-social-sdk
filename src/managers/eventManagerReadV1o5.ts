@@ -26,7 +26,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchThreadCacheEvents(options: SocialEventManagerReadOptions.IFetchThreadCacheEvents) {
-        const {id} = options;
+        const { id } = options;
         let decodedId = id.startsWith('note1') ? Nip19.decode(id).data : id;
         let msg = {
             eventId: decodedId,
@@ -42,9 +42,9 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-trending-posts', msg);
         return fetchEventsResponse.events || [];
     }
-    
+
     async fetchProfileFeedCacheEvents(options: SocialEventManagerReadOptions.IFetchProfileFeedCacheEvents) {
-        let {pubKey, since, until, userPubkey} = options;
+        let { pubKey, since, until, userPubkey } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
@@ -67,7 +67,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchProfileRepliesCacheEvents(options: SocialEventManagerReadOptions.IFetchProfileRepliesCacheEvents) {
-        let {pubKey, since, until, userPubkey} = options;
+        let { pubKey, since, until, userPubkey } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
@@ -90,7 +90,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchHomeFeedCacheEvents(options: SocialEventManagerReadOptions.IFetchHomeFeedCacheEvents) {
-        let {since, until, pubKey} = options;
+        let { since, until, pubKey } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         let msg: any = {
@@ -111,7 +111,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserProfileCacheEvents(options: SocialEventManagerReadOptions.IFetchUserProfileCacheEvents) {
-        let {pubKeys} = options;
+        let { pubKeys } = options;
         if (!pubKeys || pubKeys.length === 0) return [];
         const decodedPubKeys = pubKeys.map(pubKey => pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey);
         let msg = {
@@ -122,7 +122,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserProfileDetailEvents(options: SocialEventManagerReadOptions.IFetchUserProfileDetailEvents) {
-        let {pubKey, telegramAccount} = options;
+        let { pubKey, telegramAccount } = options;
         if (!pubKey && !telegramAccount) return [];
         let decodedPubKey;
         if (pubKey) {
@@ -137,7 +137,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchContactListCacheEvents(options: SocialEventManagerReadOptions.IFetchContactListCacheEvents) {
-        let {pubKey, detailIncluded} = options;
+        let { pubKey, detailIncluded } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey,
@@ -145,10 +145,10 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-contact-list', msg);
         return fetchEventsResponse.events || [];
-    }    
+    }
 
     async fetchUserRelays(options: SocialEventManagerReadOptions.IFetchUserRelays) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey
@@ -158,17 +158,17 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchFollowersCacheEvents(options: SocialEventManagerReadOptions.IFetchFollowersCacheEvents) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-followers', msg);
         return fetchEventsResponse.events || [];
-    }  
+    }
 
     async fetchCommunities(options: SocialEventManagerReadOptions.IFetchCommunities) {
-        const {pubkeyToCommunityIdsMap, query} = options;
+        const { pubkeyToCommunityIdsMap, query } = options;
         let events;
         if (pubkeyToCommunityIdsMap && Object.keys(pubkeyToCommunityIdsMap).length > 0) {
             let msg = {
@@ -185,7 +185,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             }
             let response = await this.fetchEventsFromAPIWithAuth('fetch-communities', msg);
             events = response.events;
-        }   
+        }
         else {
             let msg = {
                 limit: 50,
@@ -198,7 +198,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchAllUserRelatedCommunities(options: SocialEventManagerReadOptions.IFetchAllUserRelatedCommunities) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey
@@ -208,7 +208,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchAllUserRelatedCommunitiesFeed(options: SocialEventManagerReadOptions.IFetchAllUserRelatedCommunitiesFeed) {
-        const {pubKey, since, until} = options;
+        const { pubKey, since, until } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey,
@@ -221,7 +221,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserBookmarkedCommunities(options: SocialEventManagerReadOptions.IFetchUserBookmarkedCommunities) {
-        const {pubKey, excludedCommunity} = options;
+        const { pubKey, excludedCommunity } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey
@@ -239,7 +239,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCommunity(options: SocialEventManagerReadOptions.IFetchCommunity) {
-        const {communityId, creatorId} = options;
+        const { communityId, creatorId } = options;
         const decodedCreatorId = creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg = {
             identifiers: [
@@ -250,12 +250,12 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             ]
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-communities', msg);
-        return fetchEventsResponse.events || [];        
+        return fetchEventsResponse.events || [];
     }
 
     async fetchCommunityFeed(options: SocialEventManagerReadOptions.IFetchCommunityFeed) {
-        const {communityUri, since, until} = options;
-        const {creatorId, communityId} = SocialUtilsManager.getCommunityBasicInfoFromUri(communityUri);
+        const { communityUri, since, until } = options;
+        const { creatorId, communityId } = SocialUtilsManager.getCommunityBasicInfoFromUri(communityUri);
         let identifier: any = {
             pubkey: creatorId,
             names: [communityId]
@@ -267,7 +267,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             until
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-feed', msg);
-        return fetchEventsResponse.events || [];  
+        return fetchEventsResponse.events || [];
     }
 
     // async fetchNotes(options: IFetchNotesOptions) {
@@ -284,14 +284,14 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     // }
 
     async fetchAllUserRelatedChannels(options: SocialEventManagerReadOptions.IFetchAllUserRelatedChannels) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         let msg = {
             pubKey
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-related-channels', msg);
         let channels: IChannelInfo[] = [];
         const channelMetadataMap: Record<string, IChannelInfo> = {};
-        for (let event of fetchEventsResponse.events) { 
+        for (let event of fetchEventsResponse.events) {
             if (event.kind === 40) {
                 const channelInfo = SocialUtilsManager.extractChannelInfo(event);
                 if (channelInfo) {
@@ -310,7 +310,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         for (let channel of channels) {
             const scpData = channel.scpData;
             if (!scpData?.communityUri) continue;
-            const {communityId} = SocialUtilsManager.getCommunityBasicInfoFromUri(scpData.communityUri);
+            const { communityId } = SocialUtilsManager.getCommunityBasicInfoFromUri(scpData.communityUri);
             pubkeyToCommunityIdsMap[channel.eventData.pubkey] = pubkeyToCommunityIdsMap[channel.eventData.pubkey] || [];
             if (!pubkeyToCommunityIdsMap[channel.eventData.pubkey].includes(communityId)) {
                 pubkeyToCommunityIdsMap[channel.eventData.pubkey].push(communityId);
@@ -318,7 +318,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         }
 
         let channelIdToCommunityMap: Record<string, ICommunityInfo> = {};
-        const communityEvents = await this.fetchCommunities({pubkeyToCommunityIdsMap});
+        const communityEvents = await this.fetchCommunities({ pubkeyToCommunityIdsMap });
         for (let event of communityEvents) {
             const communityInfo = SocialUtilsManager.extractCommunityInfo(event);
             const channelId = communityInfo.scpData?.channelEventId;
@@ -333,7 +333,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserBookmarkedChannelEventIds(options: SocialEventManagerReadOptions.IFetchUserBookmarkedChannelEventIds) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         let msg = {
             pubKey
         };
@@ -342,7 +342,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchEventsByIds(options: SocialEventManagerReadOptions.IFetchEventsByIds) {
-        const {ids} = options;
+        const { ids } = options;
         let msg = {
             ids
         };
@@ -351,7 +351,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchTempEvents(options: SocialEventManagerReadOptions.IFetchTempEvents) {
-        const {ids} = options;
+        const { ids } = options;
         let msg = {
             ids
         };
@@ -360,7 +360,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchChannelMessages(options: SocialEventManagerReadOptions.IFetchChannelMessages) {
-        let {channelId, since, until} = options;
+        let { channelId, since, until } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         const decodedChannelId = channelId.startsWith('npub1') ? Nip19.decode(channelId).data : channelId;
@@ -375,22 +375,22 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             msg.until = until;
         }
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-channel-messages', msg);
-        return fetchEventsResponse.events || [];        
+        return fetchEventsResponse.events || [];
     }
 
     async fetchChannelInfoMessages(options: SocialEventManagerReadOptions.IFetchChannelInfoMessages) {
-        const {channelId} = options;
+        const { channelId } = options;
         const decodedChannelId = channelId.startsWith('npub1') ? Nip19.decode(channelId).data : channelId;
         let msg = {
             channelId: decodedChannelId,
             limit: 20
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-channel-info-messages', msg);
-        return fetchEventsResponse.events || [];         
+        return fetchEventsResponse.events || [];
     }
 
     async fetchMessageContactsCacheEvents(options: SocialEventManagerReadOptions.IFetchMessageContactsCacheEvents) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         const senderToLastReadMap: Record<string, number> = {};
         //FIXME: Implement a better way to get last read messages
         if (localStorage) {
@@ -413,7 +413,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchDirectMessages(options: SocialEventManagerReadOptions.IFetchDirectMessages) {
-        let {pubKey, since, until, sender} = options;
+        let { pubKey, since, until, sender } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
@@ -434,7 +434,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async resetMessageCount(options: SocialEventManagerReadOptions.IResetMessageCount) {
-        const {sender} = options;
+        const { sender } = options;
         //FIXME: Implement a better way to set last read messages
         if (localStorage) {
             const lastReadsStr = localStorage.getItem('lastReads');
@@ -448,7 +448,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchGroupKeys(options: SocialEventManagerReadOptions.IFetchGroupKeys) {
-        const {identifiers} = options;
+        const { identifiers } = options;
         let msg = {
             identifiers
         };
@@ -457,19 +457,19 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserGroupInvitations(options: SocialEventManagerReadOptions.IFetchUserGroupInvitations) {
-        const {pubKey, groupKinds} = options;
+        const { pubKey, groupKinds } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data as string : pubKey;
         let msg = {
             pubKey: decodedPubKey,
             groupKinds: groupKinds
         };
-        const fetchEventsResponse =  await this.fetchEventsFromAPIWithAuth('fetch-user-group-invitations', msg);
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-group-invitations', msg);
         let events = fetchEventsResponse.events?.filter(event => event.tags.filter(tag => tag[0] === 'p' && tag?.[3] === 'invitee').map(tag => tag[1]).includes(decodedPubKey));
         return events;
     }
 
     async fetchCalendarEvents(options: SocialEventManagerReadOptions.IFetchCalendarEvents) {
-        const {start, end, limit, previousEventId} = options;
+        const { start, end, limit, previousEventId } = options;
         let msg = {
             start: start,
             end: end,
@@ -484,17 +484,17 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCalendarEvent(options: SocialEventManagerReadOptions.IFetchCalendarEvent) {
-        const {address} = options;
+        const { address } = options;
         const key = `${address.kind}:${address.pubkey}:${address.identifier}`;
         let msg = {
             key
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-calendar-events', msg);
         return fetchEventsResponse.events?.length > 0 ? fetchEventsResponse.events[0] : null;
-    } 
+    }
 
     async fetchCalendarEventPosts(options: SocialEventManagerReadOptions.IFetchCalendarEventPosts) {
-        const {calendarEventUri} = options;    
+        const { calendarEventUri } = options;
         let msg = {
             eventUri: calendarEventUri,
             limit: 50
@@ -504,7 +504,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCalendarEventRSVPs(options: SocialEventManagerReadOptions.IFetchCalendarEventRSVPs) {
-        const {calendarEventUri, pubkey} = options;
+        const { calendarEventUri, pubkey } = options;
         let msg: any = {
             eventUri: calendarEventUri
         };
@@ -517,7 +517,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchLongFormContentEvents(options: SocialEventManagerReadOptions.IFetchLongFormContentEvents) {
-        let {pubKey, since, until} = options;
+        let { pubKey, since, until } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         let msg: any = {
@@ -538,7 +538,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async searchUsers(options: SocialEventManagerReadOptions.ISearchUsers) {
-        const {query} = options;
+        const { query } = options;
         let msg = {
             query,
             limit: 10
@@ -548,7 +548,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchPaymentRequestEvent(options: SocialEventManagerReadOptions.IFetchPaymentRequestEvent) {
-        const {paymentRequest} = options;
+        const { paymentRequest } = options;
         let hash = Event.getPaymentRequestHash(paymentRequest);
         let req: any = {
             kinds: [9739],
@@ -557,9 +557,9 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const fetchEventsResponse = await this._nostrCommunicationManager.fetchEvents(req);
         return fetchEventsResponse.events?.length > 0 ? fetchEventsResponse.events[0] : null;
     }
-    
+
     async fetchPaymentReceiptEvent(options: SocialEventManagerReadOptions.IFetchPaymentReceiptEvent) {
-        const {requestEventId} = options;
+        const { requestEventId } = options;
         let req: any = {
             kinds: [9740],
             "#e": [requestEventId]
@@ -567,7 +567,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const fetchEventsResponse = await this._nostrCommunicationManager.fetchEvents(req);
         return fetchEventsResponse.events?.length > 0 ? fetchEventsResponse.events[0] : null;
     }
-    
+
     private getPaymentHash(tags: string[][]) {
         let tagsMap: Record<string, string[]> = {};
         for (let _t of tags) {
@@ -577,7 +577,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchPaymentActivitiesForRecipient(options: SocialEventManagerReadOptions.IFetchPaymentActivitiesForRecipient) {
-        let {pubkey, since, until} = options;
+        let { pubkey, since, until } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         let paymentRequestEventsReq: any = {
@@ -622,7 +622,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchPaymentActivitiesForSender(options: SocialEventManagerReadOptions.IFetchPaymentActivitiesForSender) {
-        let {pubkey, since, until} = options;
+        let { pubkey, since, until } = options;
         if (!since) since = 0;
         if (!until) until = 0;
         let paymentReceiptEventsReq: any = {
@@ -670,7 +670,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserFollowingFeed(options: SocialEventManagerReadOptions.IFetchUserFollowingFeed) {
-        let {pubKey, until} = options;
+        let { pubKey, until } = options;
         if (!until) until = 0;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg: any = {
@@ -685,7 +685,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCommunityPinnedNotesEvents(options: SocialEventManagerReadOptions.IFetchCommunityPinnedNotesEvents) {
-        const {communityId, creatorId} = options;
+        const { communityId, creatorId } = options;
         const communityPubkey = creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg = {
             communityPubkey,
@@ -695,9 +695,9 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-pinned-notes', msg);
         return fetchEventsResponse.events || [];
     }
-    
+
     async fetchCommunityPinnedNoteIds(options: SocialEventManagerReadOptions.IFetchCommunityPinnedNoteIds) {
-        const {communityId, creatorId} = options;
+        const { communityId, creatorId } = options;
         const communityPubkey = creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg = {
             communityPubkey,
@@ -709,7 +709,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserPinnedNotes(options: SocialEventManagerReadOptions.IFetchUserPinnedNotes) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey
@@ -719,7 +719,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserBookmarks(options: SocialEventManagerReadOptions.IFetchUserBookmarks) {
-        const {pubKey} = options;
+        const { pubKey } = options;
         const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
         let msg = {
             pubkey: decodedPubKey
@@ -736,7 +736,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchUserEthWalletAccountsInfo(options: SocialEventManagerReadOptions.IFetchUserEthWalletAccountsInfo) {
-        const {pubKey, walletHash} = options;
+        const { pubKey, walletHash } = options;
         let msg: any = {
         };
         if (pubKey) {
@@ -751,7 +751,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchSubcommunites(options: SocialEventManagerReadOptions.IFetchSubcommunites) {
-        const {communityCreatorId, communityName} = options;
+        const { communityCreatorId, communityName } = options;
         const communityPubkey = communityCreatorId.startsWith('npub1') ? Nip19.decode(communityCreatorId).data : communityCreatorId;
         let msg = {
             communityPubkey,
@@ -762,7 +762,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCommunityDetailMetadata(options: SocialEventManagerReadOptions.IFetchCommunityDetailMetadata) {
-        const {communityCreatorId, communityName} = options;
+        const { communityCreatorId, communityName } = options;
         const communityPubkey = communityCreatorId.startsWith('npub1') ? Nip19.decode(communityCreatorId).data : communityCreatorId;
         let msg = {
             communityPubkey,
@@ -843,7 +843,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCommunityStalls(options: SocialEventManagerReadOptions.IFetchCommunityStalls) {
-        const {creatorId, communityId} = options;
+        const { creatorId, communityId } = options;
         const communityPubkey = creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg = {
             communityPubkey,
@@ -854,7 +854,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCommunityProducts(options: SocialEventManagerReadOptions.IFetchCommunityProducts) {
-        const {creatorId, communityId, stallId} = options;
+        const { creatorId, communityId, stallId } = options;
         const communityPubkey = creatorId && creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg = {
             communityPubkey,
@@ -866,7 +866,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchCommunityOrders(options: SocialEventManagerReadOptions.IFetchCommunityOrders) {
-        const {creatorId, communityId, stallId, status, since, until} = options;
+        const { creatorId, communityId, stallId, status, since, until } = options;
         const communityPubkey = creatorId && creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg: any = {
             communityPubkey,
@@ -882,7 +882,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchBuyerOrders(options: SocialEventManagerReadOptions.IFetchBuyerOrders) {
-        const {pubkey, status, since, until} = options;
+        const { pubkey, status, since, until } = options;
         let msg: any = {
             pubkey,
             limit: 20,
@@ -895,7 +895,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchMarketplaceOrderDetails(options: SocialEventManagerReadOptions.IFetchMarketplaceOrderDetails) {
-        const {orderId} = options;
+        const { orderId } = options;
         let msg: any = {
             orderId
         };
@@ -904,7 +904,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchMarketplaceProductDetails(options: SocialEventManagerReadOptions.IFetchMarketplaceProductDetails) {
-        const {stallId, productIds} = options;
+        const { stallId, productIds } = options;
         let msg: any = {
             stallId,
             productIds
@@ -914,7 +914,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities) {
-        const {pubkey, stallId, since, until} = options;
+        const { pubkey, stallId, since, until } = options;
         let msg: any = {
             pubkey,
             stallId,
@@ -927,7 +927,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey) {
-        const {sellerPubkey, productId} = options;
+        const { sellerPubkey, productId } = options;
         let msg: any = {
             sellerPubkey: sellerPubkey,
             productId: productId
@@ -938,7 +938,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     }
 
     async fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus) {
-        const {sellerPubkey, productId} = options;
+        const { sellerPubkey, productId } = options;
         let msg: any = {
             sellerPubkey: sellerPubkey,
             productId: productId
@@ -946,6 +946,18 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const endpoint = 'gatekeeper/check-product-purchase-status';
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth(endpoint, msg);
         return fetchEventsResponse.data?.isPurchased;
+    }
+
+    async fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole) {
+        const { role, since, until } = options;
+        let msg: any = {
+            role,
+            limit: 20
+        };
+        if (since) msg.since = since;
+        if (until) msg.until = until;
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-reservations-by-role', msg);
+        return fetchEventsResponse.data || [];
     }
 }
 

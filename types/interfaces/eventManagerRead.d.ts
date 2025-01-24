@@ -3,7 +3,7 @@ import { Nip19 } from "../core/index";
 import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember } from "./community";
 import { IAllUserRelatedChannels } from "./channel";
 import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent } from "./common";
-import { BuyerOrderStatus, SellerOrderStatus } from "./marketplace";
+import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "./marketplace";
 export interface IFetchNotesOptions {
     authors?: string[];
     ids?: string[];
@@ -224,6 +224,11 @@ export declare namespace SocialEventManagerReadOptions {
         sellerPubkey: string;
         productId: string;
     }
+    interface IFetchReservationsByRole {
+        role: 'provider' | 'user';
+        since?: number;
+        until?: number;
+    }
 }
 export interface ISocialEventManagerReadResult {
     error?: string;
@@ -289,4 +294,5 @@ export interface ISocialEventManagerRead {
     fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<INostrEvent[]>;
     fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<string>;
     fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<boolean>;
+    fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
 }

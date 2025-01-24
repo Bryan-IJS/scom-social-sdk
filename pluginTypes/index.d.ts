@@ -1783,6 +1783,13 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         currency: string;
         capacity?: number;
     }
+    export interface IReservation {
+        orderId: string;
+        serviceId: string;
+        providerPubkey: string;
+        userPubkey: string;
+        reservationTime: number;
+    }
     export interface IMarketplaceWorkingHours {
         checked?: boolean;
         startTime?: number;
@@ -1838,6 +1845,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         productName?: string;
         quantity: number;
         price?: number;
+        reservationTime?: number;
     }
     export interface IMarketplaceOrder {
         id: string;
@@ -1913,7 +1921,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
     import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember } from "@scom/scom-social-sdk/interfaces/community.ts";
     import { IAllUserRelatedChannels } from "@scom/scom-social-sdk/interfaces/channel.ts";
     import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent } from "@scom/scom-social-sdk/interfaces/common.ts";
-    import { BuyerOrderStatus, SellerOrderStatus } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
+    import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
     export interface IFetchNotesOptions {
         authors?: string[];
         ids?: string[];
@@ -2134,6 +2142,11 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
             sellerPubkey: string;
             productId: string;
         }
+        interface IFetchReservationsByRole {
+            role: 'provider' | 'user';
+            since?: number;
+            until?: number;
+        }
     }
     export interface ISocialEventManagerReadResult {
         error?: string;
@@ -2199,6 +2212,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<INostrEvent[]>;
         fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<string>;
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<boolean>;
+        fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/dataManager.ts" />
@@ -2238,6 +2252,11 @@ declare module "@scom/scom-social-sdk/interfaces/dataManager.ts" {
             stallId: string;
             productIds: string[];
             decryptPostPurchaseContent?: boolean;
+        }
+        interface IFetchReservationsByRole {
+            role: 'provider' | 'user';
+            since?: number;
+            until?: number;
         }
     }
     export interface ISocialDataManagerConfig {
@@ -2716,6 +2735,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerRead.ts" {
         fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<any[]>;
         fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<any>;
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<any>;
+        fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
     }
     export { NostrEventManagerRead };
 }
@@ -2794,6 +2814,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
         fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<any>;
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<any>;
+        fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3113,6 +3134,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         fetchMarketplaceProductDetails(options: SocialDataManagerOptions.IFetchMarketplaceProductDetails): Promise<ICommunityProductInfo[]>;
         fetchProductPostPurchaseContent(options: SocialDataManagerOptions.IFetchProductPostPurchaseContent): Promise<any>;
         fetchProductPurchaseStatus(options: SocialDataManagerOptions.IFetchProductPurchaseStatus): Promise<boolean>;
+        fetchReservationsByRole(options: SocialDataManagerOptions.IFetchReservationsByRole): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").IReservation[]>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;

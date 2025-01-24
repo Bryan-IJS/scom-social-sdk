@@ -3,7 +3,7 @@ import { Nip19 } from "../core/index";
 import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember } from "./community";
 import { IAllUserRelatedChannels } from "./channel";
 import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent } from "./common";
-import { BuyerOrderStatus, SellerOrderStatus } from "./marketplace";
+import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "./marketplace";
 
 export interface IFetchNotesOptions {
 	authors?: string[];
@@ -227,6 +227,11 @@ export namespace SocialEventManagerReadOptions {
 		sellerPubkey: string;
 		productId: string;	
 	}
+	export interface IFetchReservationsByRole {
+		role: 'provider' | 'user';
+		since?: number;
+		until?: number;
+	}
 }
 
 export interface ISocialEventManagerReadResult {
@@ -296,6 +301,7 @@ export interface ISocialEventManagerRead {
 	fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<INostrEvent[]>;
 	fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<string>;
 	fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<boolean>;
+	fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
 	// fetchMetadata(options: IFetchMetadataOptions): Promise<INostrEvent[]>;
     // fetchReplies(options: IFetchRepliesOptions): Promise<INostrEvent[]>;
     // fetchFollowing(npubs: string[]): Promise<INostrEvent[]>;

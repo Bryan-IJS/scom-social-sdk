@@ -35,6 +35,11 @@ export namespace SocialDataManagerOptions {
 		productIds: string[];
 		decryptPostPurchaseContent?: boolean;
 	}
+	export interface IFetchReservationsByRole {
+		role: 'provider' | 'user';
+		since?: number;
+		until?: number;
+	}
 }
 
 export interface ISocialDataManagerConfig {

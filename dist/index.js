@@ -7096,6 +7096,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchProductPurchaseStatus(options) {
             return null; // Not supported
         }
+        async fetchReservationsByRole(options) {
+            return null; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8007,6 +8010,19 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
             const endpoint = 'gatekeeper/check-product-purchase-status';
             const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth(endpoint, msg);
             return fetchEventsResponse.data?.isPurchased;
+        }
+        async fetchReservationsByRole(options) {
+            const { role, since, until } = options;
+            let msg = {
+                role,
+                limit: 20
+            };
+            if (since)
+                msg.since = since;
+            if (until)
+                msg.until = until;
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-reservations-by-role', msg);
+            return fetchEventsResponse.data || [];
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -11086,6 +11102,15 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 productId: productId
             });
             return isPurchased;
+        }
+        async fetchReservationsByRole(options) {
+            const { role, since, until } = options;
+            const data = await this._socialEventManagerRead.fetchReservationsByRole({
+                role,
+                since,
+                until
+            });
+            return data;
         }
         async fetchRegions() {
             return this.systemDataManager.fetchRegions();

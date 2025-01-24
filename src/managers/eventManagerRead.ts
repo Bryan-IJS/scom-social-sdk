@@ -1094,6 +1094,10 @@ class NostrEventManagerRead implements ISocialEventManagerRead {
     async fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus) {
         return null; // Not supported
     }
+
+    async fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole) {
+        return null; // Not supported
+    }
 }
 
 export {

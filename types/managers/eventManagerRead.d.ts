@@ -72,5 +72,6 @@ declare class NostrEventManagerRead implements ISocialEventManagerRead {
     fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<any[]>;
     fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<any>;
     fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<any>;
+    fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
 }
 export { NostrEventManagerRead };

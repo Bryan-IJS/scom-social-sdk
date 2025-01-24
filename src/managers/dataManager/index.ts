@@ -3086,6 +3086,16 @@ class SocialDataManager {
         return isPurchased;
     }
 
+    async fetchReservationsByRole(options: SocialDataManagerOptions.IFetchReservationsByRole) {
+        const { role, since, until } = options;
+        const data = await this._socialEventManagerRead.fetchReservationsByRole({
+            role,
+            since,
+            until
+        });
+        return data;
+    }
+
     async fetchRegions() {
         return this.systemDataManager.fetchRegions();
     }
