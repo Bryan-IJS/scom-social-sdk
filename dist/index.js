@@ -4266,7 +4266,8 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                                 paymentMethod = interfaces_1.PaymentMethod.EVM;
                             }
                             else {
-                                paymentMethod = policy.currency === 'TON' ? interfaces_1.PaymentMethod.TON : interfaces_1.PaymentMethod.Telegram;
+                                const isTonNetwork = policy.networkCode === 'TON' || policy.networkCode === 'TON-TESTNET' || policy.currency === 'TON';
+                                paymentMethod = isTonNetwork ? interfaces_1.PaymentMethod.TON : interfaces_1.PaymentMethod.Telegram;
                             }
                             policies.push({
                                 ...policy,

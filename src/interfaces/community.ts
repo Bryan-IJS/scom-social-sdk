@@ -66,6 +66,7 @@ export interface IProtectedMembershipPolicy {
 	paymentModel?: PaymentModel;
 	paymentMethod?: PaymentMethod;
 	chainId?: number;
+    networkCode?: string;
 	tokenAddress?: string;
 	tokenType?: TokenType;
 	tokenId?: number;

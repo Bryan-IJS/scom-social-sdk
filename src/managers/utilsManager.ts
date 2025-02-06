@@ -225,7 +225,8 @@ class SocialUtilsManager {
                             paymentMethod = PaymentMethod.EVM;
                         } 
                         else {
-                            paymentMethod = policy.currency === 'TON' ? PaymentMethod.TON : PaymentMethod.Telegram;
+                            const isTonNetwork = policy.networkCode === 'TON' || policy.networkCode === 'TON-TESTNET' || policy.currency === 'TON';
+                            paymentMethod = isTonNetwork ? PaymentMethod.TON : PaymentMethod.Telegram;
                         }
                         policies.push({
                             ...policy,
