@@ -1241,6 +1241,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         paymentModel?: PaymentModel;
         paymentMethod?: PaymentMethod;
         chainId?: number;
+        networkCode?: string;
         tokenAddress?: string;
         tokenType?: TokenType;
         tokenId?: number;
