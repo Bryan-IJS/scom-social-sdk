@@ -917,12 +917,14 @@ class SocialDataManager {
             creatorId: community.creatorId
         });
         let metadataByPubKeyMap: Record<string, INostrMetadata> = {};
-        for (let event of result.events) {
-            if (event.kind === 0) {
-                metadataByPubKeyMap[event.pubkey] = {
-                    ...event,
-                    content: SocialUtilsManager.parseContent(event.content)
-                };
+        if (result.events) {
+            for (let event of result.events) {
+                if (event.kind === 0) {
+                    metadataByPubKeyMap[event.pubkey] = {
+                        ...event,
+                        content: SocialUtilsManager.parseContent(event.content)
+                    };
+                }
             }
         }
         const data: ICommunityLeaderboard[] = result.data?.map(leaderboard => {

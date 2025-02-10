@@ -9068,12 +9068,14 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 creatorId: community.creatorId
             });
             let metadataByPubKeyMap = {};
-            for (let event of result.events) {
-                if (event.kind === 0) {
-                    metadataByPubKeyMap[event.pubkey] = {
-                        ...event,
-                        content: utilsManager_6.SocialUtilsManager.parseContent(event.content)
-                    };
+            if (result.events) {
+                for (let event of result.events) {
+                    if (event.kind === 0) {
+                        metadataByPubKeyMap[event.pubkey] = {
+                            ...event,
+                            content: utilsManager_6.SocialUtilsManager.parseContent(event.content)
+                        };
+                    }
                 }
             }
             const data = result.data?.map(leaderboard => {
