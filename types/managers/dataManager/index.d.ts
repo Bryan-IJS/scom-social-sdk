@@ -94,13 +94,7 @@ declare class SocialDataManager {
         pubkeyToCommunityIdsMap: Record<string, string[]>;
     };
     fetchCommunityInfo(creatorId: string, communityId: string): Promise<ICommunityInfo>;
-    private getRandomInt;
-    private constructLeaderboard;
-    fetchCommunityLeaderboard(community: ICommunityInfo): Promise<{
-        allTime: ICommunityLeaderboard[];
-        monthly: ICommunityLeaderboard[];
-        weekly: ICommunityLeaderboard[];
-    }>;
+    fetchCommunityLeaderboard(community: ICommunityInfo): Promise<ICommunityLeaderboard[]>;
     fetchUserRelatedCommunityFeedInfo(pubKey: string, since?: number, until?: number): Promise<INoteInfoExtended[]>;
     fetchThreadNotesInfo(focusedNoteId: string): Promise<{
         focusedNote: INoteInfo;

@@ -911,35 +911,36 @@ class SocialDataManager {
         return communityInfo;
     }
 
-    private getRandomInt(min: number, max: number) {
-        const minCeiled = Math.ceil(min);
-        const maxFloored = Math.floor(max);
-        return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-    }
-
-    private constructLeaderboard(members: ICommunityMember[], min: number, max: number) {
-        const data: ICommunityLeaderboard[] = members.map(m => ({
-            npub: m.id,
-            username: m.username,
-            displayName: m.name,
-            avatar: m.profileImageUrl,
-            internetIdentifier: m.internetIdentifier,
-            point: this.getRandomInt(min, max)
-        })).sort((a, b) => b.point - a.point).slice(0, 10);
-        return data;
-    }
-
     async fetchCommunityLeaderboard(community: ICommunityInfo) {
-        const communityUriToMembersMap = await this.fetchCommunitiesMembers([community]);
-        const members = communityUriToMembersMap[community.communityUri] || [];
-        const allTime = this.constructLeaderboard(members, 100, 600);
-        const monthly = this.constructLeaderboard(members, 40, 99);
-        const weekly = this.constructLeaderboard(members, 1, 39);
-        return {
-            allTime,
-            monthly,
-            weekly
+        const result = await this._socialEventManagerRead.fetchCommunityLeaderboard({
+            communityId: community.communityId,
+            creatorId: community.creatorId
+        });
+        let metadataByPubKeyMap: Record<string, INostrMetadata> = {};
+        if (result.events) {
+            for (let event of result.events) {
+                if (event.kind === 0) {
+                    metadataByPubKeyMap[event.pubkey] = {
+                        ...event,
+                        content: SocialUtilsManager.parseContent(event.content)
+                    };
+                }
+            }
         }
+        const data: ICommunityLeaderboard[] = result.data?.map(leaderboard => {
+            const metadata = metadataByPubKeyMap[leaderboard.pubkey];
+            const metadataContent = metadata.content;
+            const internetIdentifier = typeof metadataContent.nip05 === 'string' ? metadataContent.nip05?.replace('_@', '') || '' : '';
+            return {
+                npub: Nip19.npubEncode(metadata.pubkey),
+                username: metadataContent.name,
+                displayName: metadataContent.display_name,
+                avatar: metadataContent.picture,
+                internetIdentifier,
+                point: leaderboard.score
+            }
+        }) || [];
+        return data;
     }
 
     async fetchUserRelatedCommunityFeedInfo(pubKey: string, since?: number, until?: number) {

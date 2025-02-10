@@ -2,7 +2,7 @@ import { IFetchPaymentActivitiesOptions, IPaymentActivity } from "./misc";
 import { Nip19 } from "../core/index";
 import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember } from "./community";
 import { IAllUserRelatedChannels } from "./channel";
-import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent } from "./common";
+import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse } from "./common";
 import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "./marketplace";
 
 export interface IFetchNotesOptions {
@@ -232,6 +232,7 @@ export namespace SocialEventManagerReadOptions {
 		since?: number;
 		until?: number;
 	}
+	export interface IFetchCommunityLeaderboard extends ICommunityBasicInfo {}
 }
 
 export interface ISocialEventManagerReadResult {
@@ -302,6 +303,7 @@ export interface ISocialEventManagerRead {
 	fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<string>;
 	fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<boolean>;
 	fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
+	fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<INostrFetchEventsResponse>
 	// fetchMetadata(options: IFetchMetadataOptions): Promise<INostrEvent[]>;
     // fetchReplies(options: IFetchRepliesOptions): Promise<INostrEvent[]>;
     // fetchFollowing(npubs: string[]): Promise<INostrEvent[]>;
