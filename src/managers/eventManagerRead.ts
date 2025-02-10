@@ -1098,6 +1098,10 @@ class NostrEventManagerRead implements ISocialEventManagerRead {
     async fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole) {
         return null; // Not supported
     }
+
+    async fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard) {
+        return null; // Not supported
+    }
 }
 
 export {

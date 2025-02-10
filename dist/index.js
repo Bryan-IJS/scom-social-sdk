@@ -7100,6 +7100,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchReservationsByRole(options) {
             return null; // Not supported
         }
+        async fetchCommunityLeaderboard(options) {
+            return null; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8024,6 +8027,16 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 msg.until = until;
             const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-reservations-by-role', msg);
             return fetchEventsResponse.data || [];
+        }
+        async fetchCommunityLeaderboard(options) {
+            const { creatorId, communityId } = options;
+            const communityPubkey = creatorId.startsWith('npub1') ? index_4.Nip19.decode(creatorId).data : creatorId;
+            let msg = {
+                communityPubkey,
+                communityName: communityId
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-leaderboard', msg);
+            return fetchEventsResponse;
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -9049,33 +9062,34 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             }
             return communityInfo;
         }
-        getRandomInt(min, max) {
-            const minCeiled = Math.ceil(min);
-            const maxFloored = Math.floor(max);
-            return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-        }
-        constructLeaderboard(members, min, max) {
-            const data = members.map(m => ({
-                npub: m.id,
-                username: m.username,
-                displayName: m.name,
-                avatar: m.profileImageUrl,
-                internetIdentifier: m.internetIdentifier,
-                point: this.getRandomInt(min, max)
-            })).sort((a, b) => b.point - a.point).slice(0, 10);
-            return data;
-        }
         async fetchCommunityLeaderboard(community) {
-            const communityUriToMembersMap = await this.fetchCommunitiesMembers([community]);
-            const members = communityUriToMembersMap[community.communityUri] || [];
-            const allTime = this.constructLeaderboard(members, 100, 600);
-            const monthly = this.constructLeaderboard(members, 40, 99);
-            const weekly = this.constructLeaderboard(members, 1, 39);
-            return {
-                allTime,
-                monthly,
-                weekly
-            };
+            const result = await this._socialEventManagerRead.fetchCommunityLeaderboard({
+                communityId: community.communityId,
+                creatorId: community.creatorId
+            });
+            let metadataByPubKeyMap = {};
+            for (let event of result.events) {
+                if (event.kind === 0) {
+                    metadataByPubKeyMap[event.pubkey] = {
+                        ...event,
+                        content: utilsManager_6.SocialUtilsManager.parseContent(event.content)
+                    };
+                }
+            }
+            const data = result.data?.map(leaderboard => {
+                const metadata = metadataByPubKeyMap[leaderboard.pubkey];
+                const metadataContent = metadata.content;
+                const internetIdentifier = typeof metadataContent.nip05 === 'string' ? metadataContent.nip05?.replace('_@', '') || '' : '';
+                return {
+                    npub: index_6.Nip19.npubEncode(metadata.pubkey),
+                    username: metadataContent.name,
+                    displayName: metadataContent.display_name,
+                    avatar: metadataContent.picture,
+                    internetIdentifier,
+                    point: leaderboard.score
+                };
+            }) || [];
+            return data;
         }
         async fetchUserRelatedCommunityFeedInfo(pubKey, since, until) {
             let result = [];

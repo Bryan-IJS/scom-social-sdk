@@ -959,6 +959,17 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-reservations-by-role', msg);
         return fetchEventsResponse.data || [];
     }
+
+    async fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard) {
+        const { creatorId, communityId } = options;
+        const communityPubkey = creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
+        let msg = {
+            communityPubkey,
+            communityName: communityId
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-leaderboard', msg);
+        return fetchEventsResponse;
+    }
 }
 
 export {
