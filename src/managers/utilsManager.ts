@@ -1,6 +1,6 @@
 import { Utils } from "@ijstech/eth-wallet";
 import { Nip19, Event, Keys } from "../core/index";
-import { CalendarEventType, ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityPostStatusOption, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceOrder, IMarketplaceOrderItem, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile, MarketplaceProductType, MembershipType, PaymentMethod, ScpStandardId } from "../interfaces";
+import { CalendarEventType, ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityPostStatusOption, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceOrder, IMarketplaceOrderItem, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile, MarketplaceProductType, MembershipType, PaymentMethod, ProtectedMembershipPolicyType, ScpStandardId } from "../interfaces";
 import { Signer } from "@scom/scom-signer";
 import Geohash from '../utils/geohash';
 
@@ -217,21 +217,16 @@ class SocialUtilsManager {
             else {
                 if (data.policies) {
                     for (let policy of data.policies) {
-                        let paymentMethod;
-                        if (policy.paymentMethod) {
-                            paymentMethod = policy.paymentMethod;
-                        } 
-                        else if (policy.chainId) {
-                            paymentMethod = PaymentMethod.EVM;
-                        } 
-                        else {
-                            const isTonNetwork = policy.networkCode === 'TON' || policy.networkCode === 'TON-TESTNET' || policy.currency === 'TON';
-                            paymentMethod = isTonNetwork ? PaymentMethod.TON : PaymentMethod.Telegram;
+                        if (policy.policyType === ProtectedMembershipPolicyType.TokenExclusive && !policy.paymentMethod) {
+                            if (policy.chainId) {
+                                policy.paymentMethod = PaymentMethod.EVM;
+                            } 
+                            else {
+                                const isTonNetwork = policy.networkCode === 'TON' || policy.networkCode === 'TON-TESTNET' || policy.currency === 'TON';
+                                policy.paymentMethod = isTonNetwork ? PaymentMethod.TON : PaymentMethod.Telegram;
+                            }
                         }
-                        policies.push({
-                            ...policy,
-                            paymentMethod
-                        })
+                        policies.push(policy);
                     }
                 }
             }
