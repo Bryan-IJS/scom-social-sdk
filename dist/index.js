@@ -9086,7 +9086,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                     point: leaderboard.score
                 };
             }) || [];
-            return data;
+            return data.sort((a, b) => b.point - a.point);
         }
         async fetchUserRelatedCommunityFeedInfo(pubKey, since, until) {
             let result = [];
