@@ -940,7 +940,7 @@ class SocialDataManager {
                 point: leaderboard.score
             }
         }) || [];
-        return data;
+        return data.sort((a, b) => b.point - a.point);
     }
 
     async fetchUserRelatedCommunityFeedInfo(pubKey: string, since?: number, until?: number) {
