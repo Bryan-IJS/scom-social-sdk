@@ -8028,7 +8028,8 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
             const communityPubkey = creatorId.startsWith('npub1') ? index_4.Nip19.decode(creatorId).data : creatorId;
             let msg = {
                 communityPubkey,
-                communityName: communityId
+                communityName: communityId,
+                limit: 20
             };
             const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-leaderboard', msg);
             return fetchEventsResponse;
@@ -9086,7 +9087,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                     point: leaderboard.score
                 };
             }) || [];
-            return data.sort((a, b) => b.point - a.point);
+            return data;
         }
         async fetchUserRelatedCommunityFeedInfo(pubKey, since, until) {
             let result = [];

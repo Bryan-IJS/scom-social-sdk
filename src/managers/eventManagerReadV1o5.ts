@@ -965,7 +965,8 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         const communityPubkey = creatorId.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
         let msg = {
             communityPubkey,
-            communityName: communityId
+            communityName: communityId,
+            limit: 20
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-leaderboard', msg);
         return fetchEventsResponse;
