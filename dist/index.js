@@ -11061,6 +11061,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 stallId: metadata.stall_id,
                 stallName: metadata.stall_name,
                 status: metadata.status,
+                orderStatus: metadata.order_status,
                 paymentActivity,
                 productDetails: products
             };
