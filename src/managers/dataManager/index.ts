@@ -3028,6 +3028,7 @@ class SocialDataManager {
             stallId: metadata.stall_id,
             stallName: metadata.stall_name,
             status: metadata.status,
+            orderStatus: metadata.order_status,
             paymentActivity,
             productDetails: products
         }
