@@ -147,7 +147,7 @@ export interface IPaymentActivityV2 {
     stallId?: string;
     stallName?: string;
     orderId?: string;
-    paymentMethod?: "Stripe" | "EVM";
+    paymentMethod?: "Stripe" | "EVM" | "TON";
     referenceId?: string;
     createdAt?: number;
 }
