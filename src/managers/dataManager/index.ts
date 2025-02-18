@@ -3015,6 +3015,7 @@ class SocialDataManager {
         const stallInfo = SocialUtilsManager.extractCommunityStallInfo(stallEvent);
         const orderEvent = events.find(event => event.kind === 4 && event.tags.find(tag => tag[0] === 't')?.[1] === 'order');
         const order = await SocialUtilsManager.extractMarketplaceOrder(this._privateKey, orderEvent, stallInfo);
+        if (!order) return null;
         const paymentEvent = events.find(event => event.kind === 4 && event.tags.find(tag => tag[0] === 't')?.[1] === 'payment');
         const paymentActivity = await SocialUtilsManager.extractPaymentActivity(this._privateKey, paymentEvent);
         const metadataEvent = events.find(event => event.kind === 10000113);
