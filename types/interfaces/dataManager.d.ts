@@ -39,6 +39,11 @@ export declare namespace SocialDataManagerOptions {
         since?: number;
         until?: number;
     }
+    interface IFetchUserCommunityScores {
+        pubKey: string;
+        creatorId?: string;
+        communityId?: string;
+    }
 }
 export interface ISocialDataManagerConfig {
     version?: 1 | 1.5 | 2;

@@ -7103,6 +7103,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchCommunityLeaderboard(options) {
             return null; // Not supported
         }
+        async fetchUserCommunityScores(options) {
+            return null; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8038,6 +8041,37 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
             };
             const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-leaderboard', msg);
             return fetchEventsResponse;
+        }
+        async fetchUserCommunityScores(options) {
+            const { pubKey, creatorId, communityId } = options;
+            const decodedPubKey = pubKey.startsWith('npub1') ? index_4.Nip19.decode(pubKey).data : pubKey;
+            const communityPubkey = creatorId?.startsWith('npub1') ? index_4.Nip19.decode(creatorId).data : creatorId;
+            let msg = {
+                pubkey: decodedPubKey,
+                communityPubkey,
+                communityName: communityId,
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-community-scores', msg);
+            const communityInfoMap = {};
+            for (let event of fetchEventsResponse.events) {
+                if (event.kind === 34550) {
+                    const communityInfo = utilsManager_4.SocialUtilsManager.extractCommunityInfo(event);
+                    if (communityInfo)
+                        communityInfoMap[communityInfo.communityUri] = communityInfo;
+                }
+            }
+            const userCommunityScores = fetchEventsResponse.data.map(v => {
+                const communityUri = utilsManager_4.SocialUtilsManager.getCommunityUri(v.communitiesPubkey, v.communitiesD);
+                const communityInfo = communityInfoMap[communityUri];
+                return {
+                    creatorId: index_4.Nip19.npubEncode(v.communitiesPubkey),
+                    communityId: v.communitiesD,
+                    communityImageUrl: communityInfo?.avatarImgUrl || communityInfo?.bannerImgUrl,
+                    npub: index_4.Nip19.npubEncode(v.pubkey),
+                    point: v.score
+                };
+            });
+            return userCommunityScores || [];
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -11131,6 +11165,10 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 since,
                 until
             });
+            return data;
+        }
+        async fetchUserCommunityScores(options) {
+            const data = await this._socialEventManagerRead.fetchUserCommunityScores(options);
             return data;
         }
         async fetchRegions() {

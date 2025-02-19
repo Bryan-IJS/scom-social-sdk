@@ -40,6 +40,11 @@ export namespace SocialDataManagerOptions {
 		since?: number;
 		until?: number;
 	}
+	export interface IFetchUserCommunityScores {
+		pubKey: string;
+		creatorId?: string;
+		communityId?: string;
+	}
 }
 
 export interface ISocialDataManagerConfig {

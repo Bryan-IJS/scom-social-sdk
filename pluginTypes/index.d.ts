@@ -1492,6 +1492,13 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         gatekeeperUrl: string;
         walletAddresses: string[];
     }
+    export interface IUserCommunityScore {
+        creatorId: string;
+        communityId: string;
+        communityImageUrl?: string;
+        npub: string;
+        point: number;
+    }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/channel.ts" />
 declare module "@scom/scom-social-sdk/interfaces/channel.ts" {
@@ -1919,7 +1926,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
 declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
     import { IFetchPaymentActivitiesOptions, IPaymentActivity } from "@scom/scom-social-sdk/interfaces/misc.ts";
     import { Nip19 } from "@scom/scom-social-sdk/core/index.ts";
-    import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember } from "@scom/scom-social-sdk/interfaces/community.ts";
+    import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore } from "@scom/scom-social-sdk/interfaces/community.ts";
     import { IAllUserRelatedChannels } from "@scom/scom-social-sdk/interfaces/channel.ts";
     import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse } from "@scom/scom-social-sdk/interfaces/common.ts";
     import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
@@ -2150,6 +2157,11 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         }
         interface IFetchCommunityLeaderboard extends ICommunityBasicInfo {
         }
+        interface IFetchUserCommunityScores {
+            pubKey: string;
+            creatorId?: string;
+            communityId?: string;
+        }
     }
     export interface ISocialEventManagerReadResult {
         error?: string;
@@ -2217,6 +2229,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<boolean>;
         fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
         fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<INostrFetchEventsResponse>;
+        fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/dataManager.ts" />
@@ -2261,6 +2274,11 @@ declare module "@scom/scom-social-sdk/interfaces/dataManager.ts" {
             role: 'provider' | 'user';
             since?: number;
             until?: number;
+        }
+        interface IFetchUserCommunityScores {
+            pubKey: string;
+            creatorId?: string;
+            communityId?: string;
         }
     }
     export interface ISocialDataManagerConfig {
@@ -2741,12 +2759,13 @@ declare module "@scom/scom-social-sdk/managers/eventManagerRead.ts" {
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<any>;
         fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
         fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<any>;
+        fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<any>;
     }
     export { NostrEventManagerRead };
 }
 /// <amd-module name="@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" />
 declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
-    import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IPaymentActivity, ISocialEventManagerRead, SocialEventManagerReadOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
+    import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, SocialEventManagerReadOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
     import { INostrRestAPIManager } from "@scom/scom-social-sdk/managers/communication.ts";
     class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         protected _nostrCommunicationManager: INostrRestAPIManager;
@@ -2821,6 +2840,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<any>;
         fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
         fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrFetchEventsResponse>;
+        fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3135,6 +3155,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         fetchProductPostPurchaseContent(options: SocialDataManagerOptions.IFetchProductPostPurchaseContent): Promise<any>;
         fetchProductPurchaseStatus(options: SocialDataManagerOptions.IFetchProductPurchaseStatus): Promise<boolean>;
         fetchReservationsByRole(options: SocialDataManagerOptions.IFetchReservationsByRole): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").IReservation[]>;
+        fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScore[]>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;

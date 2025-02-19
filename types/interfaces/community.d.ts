@@ -307,4 +307,11 @@ export interface ICheckIfUserHasAccessToCommunityOptions {
     gatekeeperUrl: string;
     walletAddresses: string[];
 }
+export interface IUserCommunityScore {
+    creatorId: string;
+    communityId: string;
+    communityImageUrl?: string;
+    npub: string;
+    point: number;
+}
 export {};
