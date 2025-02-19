@@ -1,5 +1,5 @@
 import { Nip19, Event, Keys } from "../core/index";
-import { CommunityRole, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
+import { CommunityRole, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
 import { INostrCommunicationManager, INostrRestAPIManager } from "./communication";
 import { SocialUtilsManager } from "./utilsManager";
 import { NostrEventManagerRead } from "./eventManagerRead";
@@ -970,6 +970,37 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-community-leaderboard', msg);
         return fetchEventsResponse;
+    }
+
+    async fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores) {
+        const { pubKey, creatorId, communityId } = options;
+        const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
+        const communityPubkey = creatorId?.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
+        let msg = {
+            pubkey: decodedPubKey,
+            communityPubkey,
+            communityName: communityId,
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-community-scores', msg);
+        const communityInfoMap: Record<string, ICommunityInfo> = {};
+        for (let event of fetchEventsResponse.events) {
+            if (event.kind === 34550) {
+                const communityInfo = SocialUtilsManager.extractCommunityInfo(event);
+                if (communityInfo) communityInfoMap[communityInfo.communityUri] = communityInfo;
+            }
+        }
+        const userCommunityScores: IUserCommunityScore[] = fetchEventsResponse.data.map(v => {
+            const communityUri = SocialUtilsManager.getCommunityUri(v.communitiesPubkey, v.communitiesD);
+            const communityInfo = communityInfoMap[communityUri];
+            return {
+                creatorId: Nip19.npubEncode(v.communitiesPubkey),
+                communityId: v.communitiesD,
+                communityImageUrl: communityInfo?.avatarImgUrl || communityInfo?.bannerImgUrl,
+                npub: Nip19.npubEncode(v.pubkey),
+                point: v.score
+            }
+        });
+        return userCommunityScores || [];
     }
 }
 

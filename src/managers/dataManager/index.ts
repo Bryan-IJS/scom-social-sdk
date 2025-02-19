@@ -3099,6 +3099,11 @@ class SocialDataManager {
         return data;
     }
 
+    async fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores) {
+        const data = await this._socialEventManagerRead.fetchUserCommunityScores(options);
+        return data;
+    }
+
     async fetchRegions() {
         return this.systemDataManager.fetchRegions();
     }

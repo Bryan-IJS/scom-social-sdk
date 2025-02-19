@@ -1,6 +1,6 @@
 import { IFetchPaymentActivitiesOptions, IPaymentActivity } from "./misc";
 import { Nip19 } from "../core/index";
-import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember } from "./community";
+import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore } from "./community";
 import { IAllUserRelatedChannels } from "./channel";
 import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse } from "./common";
 import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "./marketplace";
@@ -233,6 +233,11 @@ export namespace SocialEventManagerReadOptions {
 		until?: number;
 	}
 	export interface IFetchCommunityLeaderboard extends ICommunityBasicInfo {}
+	export interface IFetchUserCommunityScores {
+		pubKey: string;
+		creatorId?: string;
+		communityId?: string;
+	}
 }
 
 export interface ISocialEventManagerReadResult {
@@ -303,7 +308,8 @@ export interface ISocialEventManagerRead {
 	fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<string>;
 	fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<boolean>;
 	fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
-	fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<INostrFetchEventsResponse>
+	fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<INostrFetchEventsResponse>;
+	fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
 	// fetchMetadata(options: IFetchMetadataOptions): Promise<INostrEvent[]>;
     // fetchReplies(options: IFetchRepliesOptions): Promise<INostrEvent[]>;
     // fetchFollowing(npubs: string[]): Promise<INostrEvent[]>;
