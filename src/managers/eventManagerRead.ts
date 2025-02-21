@@ -1106,6 +1106,10 @@ class NostrEventManagerRead implements ISocialEventManagerRead {
     async fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores) {
         return null; // Not supported
     }
+
+    async fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs) {
+        return null; // Not supported
+    }
 }
 
 export {
