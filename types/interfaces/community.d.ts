@@ -36,6 +36,11 @@ export declare enum SubscriptionBundleType {
     MinimumDuration = "MinimumDuration",
     ValidityPeriod = "ValidityPeriod"
 }
+export declare enum CommunityScoreType {
+    Like = "Like",
+    Post = "Post",
+    Reply = "Reply"
+}
 export interface ISubscriptionDiscountRule {
     id: number;
     name: string;
@@ -313,5 +318,13 @@ export interface IUserCommunityScore {
     communityImageUrl?: string;
     npub: string;
     point: number;
+}
+export interface IUserCommunityScoreLog {
+    creatorId: string;
+    communityId: string;
+    npub: string;
+    point: number;
+    type?: CommunityScoreType;
+    createdAt: number;
 }
 export {};

@@ -1221,6 +1221,11 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         MinimumDuration = "MinimumDuration",
         ValidityPeriod = "ValidityPeriod"
     }
+    export enum CommunityScoreType {
+        Like = "Like",
+        Post = "Post",
+        Reply = "Reply"
+    }
     export interface ISubscriptionDiscountRule {
         id: number;
         name: string;
@@ -1498,6 +1503,14 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         communityImageUrl?: string;
         npub: string;
         point: number;
+    }
+    export interface IUserCommunityScoreLog {
+        creatorId: string;
+        communityId: string;
+        npub: string;
+        point: number;
+        type?: CommunityScoreType;
+        createdAt: number;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/channel.ts" />
@@ -1926,7 +1939,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
 declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
     import { IFetchPaymentActivitiesOptions, IPaymentActivity } from "@scom/scom-social-sdk/interfaces/misc.ts";
     import { Nip19 } from "@scom/scom-social-sdk/core/index.ts";
-    import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore } from "@scom/scom-social-sdk/interfaces/community.ts";
+    import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore, IUserCommunityScoreLog } from "@scom/scom-social-sdk/interfaces/community.ts";
     import { IAllUserRelatedChannels } from "@scom/scom-social-sdk/interfaces/channel.ts";
     import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse } from "@scom/scom-social-sdk/interfaces/common.ts";
     import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
@@ -2162,6 +2175,9 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
             creatorId?: string;
             communityId?: string;
         }
+        interface IFetchUserCommunityScoreLogs extends ICommunityBasicInfo {
+            pubKey: string;
+        }
     }
     export interface ISocialEventManagerReadResult {
         error?: string;
@@ -2230,6 +2246,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<IReservation[]>;
         fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<INostrFetchEventsResponse>;
         fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
+        fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/dataManager.ts" />
@@ -2760,12 +2777,13 @@ declare module "@scom/scom-social-sdk/managers/eventManagerRead.ts" {
         fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
         fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<any>;
         fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<any>;
+        fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<any>;
     }
     export { NostrEventManagerRead };
 }
 /// <amd-module name="@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" />
 declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
-    import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, SocialEventManagerReadOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
+    import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, INostrEvent, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, IUserCommunityScoreLog, SocialEventManagerReadOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
     import { INostrRestAPIManager } from "@scom/scom-social-sdk/managers/communication.ts";
     class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         protected _nostrCommunicationManager: INostrRestAPIManager;
@@ -2774,73 +2792,74 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         set nostrCommunicationManager(manager: INostrRestAPIManager);
         set privateKey(privateKey: string);
         fetchEventsFromAPIWithAuth(endpoint: string, msg: any): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrFetchEventsResponse>;
-        fetchThreadCacheEvents(options: SocialEventManagerReadOptions.IFetchThreadCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchTrendingCacheEvents(options: SocialEventManagerReadOptions.IFetchTrendingCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchProfileFeedCacheEvents(options: SocialEventManagerReadOptions.IFetchProfileFeedCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchProfileRepliesCacheEvents(options: SocialEventManagerReadOptions.IFetchProfileRepliesCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchHomeFeedCacheEvents(options: SocialEventManagerReadOptions.IFetchHomeFeedCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchUserProfileCacheEvents(options: SocialEventManagerReadOptions.IFetchUserProfileCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchUserProfileDetailEvents(options: SocialEventManagerReadOptions.IFetchUserProfileDetailEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchContactListCacheEvents(options: SocialEventManagerReadOptions.IFetchContactListCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchUserRelays(options: SocialEventManagerReadOptions.IFetchUserRelays): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchFollowersCacheEvents(options: SocialEventManagerReadOptions.IFetchFollowersCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchThreadCacheEvents(options: SocialEventManagerReadOptions.IFetchThreadCacheEvents): Promise<INostrEvent[]>;
+        fetchTrendingCacheEvents(options: SocialEventManagerReadOptions.IFetchTrendingCacheEvents): Promise<INostrEvent[]>;
+        fetchProfileFeedCacheEvents(options: SocialEventManagerReadOptions.IFetchProfileFeedCacheEvents): Promise<INostrEvent[]>;
+        fetchProfileRepliesCacheEvents(options: SocialEventManagerReadOptions.IFetchProfileRepliesCacheEvents): Promise<INostrEvent[]>;
+        fetchHomeFeedCacheEvents(options: SocialEventManagerReadOptions.IFetchHomeFeedCacheEvents): Promise<INostrEvent[]>;
+        fetchUserProfileCacheEvents(options: SocialEventManagerReadOptions.IFetchUserProfileCacheEvents): Promise<INostrEvent[]>;
+        fetchUserProfileDetailEvents(options: SocialEventManagerReadOptions.IFetchUserProfileDetailEvents): Promise<INostrEvent[]>;
+        fetchContactListCacheEvents(options: SocialEventManagerReadOptions.IFetchContactListCacheEvents): Promise<INostrEvent[]>;
+        fetchUserRelays(options: SocialEventManagerReadOptions.IFetchUserRelays): Promise<INostrEvent[]>;
+        fetchFollowersCacheEvents(options: SocialEventManagerReadOptions.IFetchFollowersCacheEvents): Promise<INostrEvent[]>;
         fetchCommunities(options: SocialEventManagerReadOptions.IFetchCommunities): Promise<any>;
-        fetchAllUserRelatedCommunities(options: SocialEventManagerReadOptions.IFetchAllUserRelatedCommunities): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchAllUserRelatedCommunitiesFeed(options: SocialEventManagerReadOptions.IFetchAllUserRelatedCommunitiesFeed): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchAllUserRelatedCommunities(options: SocialEventManagerReadOptions.IFetchAllUserRelatedCommunities): Promise<INostrEvent[]>;
+        fetchAllUserRelatedCommunitiesFeed(options: SocialEventManagerReadOptions.IFetchAllUserRelatedCommunitiesFeed): Promise<INostrEvent[]>;
         fetchUserBookmarkedCommunities(options: SocialEventManagerReadOptions.IFetchUserBookmarkedCommunities): Promise<ICommunityBasicInfo[]>;
-        fetchCommunity(options: SocialEventManagerReadOptions.IFetchCommunity): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchCommunityFeed(options: SocialEventManagerReadOptions.IFetchCommunityFeed): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchCommunity(options: SocialEventManagerReadOptions.IFetchCommunity): Promise<INostrEvent[]>;
+        fetchCommunityFeed(options: SocialEventManagerReadOptions.IFetchCommunityFeed): Promise<INostrEvent[]>;
         fetchAllUserRelatedChannels(options: SocialEventManagerReadOptions.IFetchAllUserRelatedChannels): Promise<{
             channels: IChannelInfo[];
             channelMetadataMap: Record<string, IChannelInfo>;
             channelIdToCommunityMap: Record<string, ICommunityInfo>;
         }>;
         fetchUserBookmarkedChannelEventIds(options: SocialEventManagerReadOptions.IFetchUserBookmarkedChannelEventIds): Promise<any>;
-        fetchEventsByIds(options: SocialEventManagerReadOptions.IFetchEventsByIds): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchTempEvents(options: SocialEventManagerReadOptions.IFetchTempEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchChannelMessages(options: SocialEventManagerReadOptions.IFetchChannelMessages): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchChannelInfoMessages(options: SocialEventManagerReadOptions.IFetchChannelInfoMessages): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchMessageContactsCacheEvents(options: SocialEventManagerReadOptions.IFetchMessageContactsCacheEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchDirectMessages(options: SocialEventManagerReadOptions.IFetchDirectMessages): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchEventsByIds(options: SocialEventManagerReadOptions.IFetchEventsByIds): Promise<INostrEvent[]>;
+        fetchTempEvents(options: SocialEventManagerReadOptions.IFetchTempEvents): Promise<INostrEvent[]>;
+        fetchChannelMessages(options: SocialEventManagerReadOptions.IFetchChannelMessages): Promise<INostrEvent[]>;
+        fetchChannelInfoMessages(options: SocialEventManagerReadOptions.IFetchChannelInfoMessages): Promise<INostrEvent[]>;
+        fetchMessageContactsCacheEvents(options: SocialEventManagerReadOptions.IFetchMessageContactsCacheEvents): Promise<INostrEvent[]>;
+        fetchDirectMessages(options: SocialEventManagerReadOptions.IFetchDirectMessages): Promise<INostrEvent[]>;
         resetMessageCount(options: SocialEventManagerReadOptions.IResetMessageCount): Promise<void>;
-        fetchGroupKeys(options: SocialEventManagerReadOptions.IFetchGroupKeys): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchUserGroupInvitations(options: SocialEventManagerReadOptions.IFetchUserGroupInvitations): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchGroupKeys(options: SocialEventManagerReadOptions.IFetchGroupKeys): Promise<INostrEvent[]>;
+        fetchUserGroupInvitations(options: SocialEventManagerReadOptions.IFetchUserGroupInvitations): Promise<INostrEvent[]>;
         fetchCalendarEvents(options: SocialEventManagerReadOptions.IFetchCalendarEvents): Promise<{
-            events: import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[];
+            events: INostrEvent[];
             data: any;
         }>;
-        fetchCalendarEvent(options: SocialEventManagerReadOptions.IFetchCalendarEvent): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent>;
-        fetchCalendarEventPosts(options: SocialEventManagerReadOptions.IFetchCalendarEventPosts): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchCalendarEventRSVPs(options: SocialEventManagerReadOptions.IFetchCalendarEventRSVPs): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchLongFormContentEvents(options: SocialEventManagerReadOptions.IFetchLongFormContentEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        searchUsers(options: SocialEventManagerReadOptions.ISearchUsers): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchPaymentRequestEvent(options: SocialEventManagerReadOptions.IFetchPaymentRequestEvent): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent>;
-        fetchPaymentReceiptEvent(options: SocialEventManagerReadOptions.IFetchPaymentReceiptEvent): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent>;
+        fetchCalendarEvent(options: SocialEventManagerReadOptions.IFetchCalendarEvent): Promise<INostrEvent>;
+        fetchCalendarEventPosts(options: SocialEventManagerReadOptions.IFetchCalendarEventPosts): Promise<INostrEvent[]>;
+        fetchCalendarEventRSVPs(options: SocialEventManagerReadOptions.IFetchCalendarEventRSVPs): Promise<INostrEvent[]>;
+        fetchLongFormContentEvents(options: SocialEventManagerReadOptions.IFetchLongFormContentEvents): Promise<INostrEvent[]>;
+        searchUsers(options: SocialEventManagerReadOptions.ISearchUsers): Promise<INostrEvent[]>;
+        fetchPaymentRequestEvent(options: SocialEventManagerReadOptions.IFetchPaymentRequestEvent): Promise<INostrEvent>;
+        fetchPaymentReceiptEvent(options: SocialEventManagerReadOptions.IFetchPaymentReceiptEvent): Promise<INostrEvent>;
         private getPaymentHash;
         fetchPaymentActivitiesForRecipient(options: SocialEventManagerReadOptions.IFetchPaymentActivitiesForRecipient): Promise<IPaymentActivity[]>;
         fetchPaymentActivitiesForSender(options: SocialEventManagerReadOptions.IFetchPaymentActivitiesForSender): Promise<IPaymentActivity[]>;
-        fetchUserFollowingFeed(options: SocialEventManagerReadOptions.IFetchUserFollowingFeed): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchCommunityPinnedNotesEvents(options: SocialEventManagerReadOptions.IFetchCommunityPinnedNotesEvents): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchUserFollowingFeed(options: SocialEventManagerReadOptions.IFetchUserFollowingFeed): Promise<INostrEvent[]>;
+        fetchCommunityPinnedNotesEvents(options: SocialEventManagerReadOptions.IFetchCommunityPinnedNotesEvents): Promise<INostrEvent[]>;
         fetchCommunityPinnedNoteIds(options: SocialEventManagerReadOptions.IFetchCommunityPinnedNoteIds): Promise<any>;
-        fetchUserPinnedNotes(options: SocialEventManagerReadOptions.IFetchUserPinnedNotes): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent>;
-        fetchUserBookmarks(options: SocialEventManagerReadOptions.IFetchUserBookmarks): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent>;
-        fetchTrendingCommunities(): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchUserEthWalletAccountsInfo(options: SocialEventManagerReadOptions.IFetchUserEthWalletAccountsInfo): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent>;
-        fetchSubcommunites(options: SocialEventManagerReadOptions.IFetchSubcommunites): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchCommunityDetailMetadata(options: SocialEventManagerReadOptions.IFetchCommunityDetailMetadata): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchUserPinnedNotes(options: SocialEventManagerReadOptions.IFetchUserPinnedNotes): Promise<INostrEvent>;
+        fetchUserBookmarks(options: SocialEventManagerReadOptions.IFetchUserBookmarks): Promise<INostrEvent>;
+        fetchTrendingCommunities(): Promise<INostrEvent[]>;
+        fetchUserEthWalletAccountsInfo(options: SocialEventManagerReadOptions.IFetchUserEthWalletAccountsInfo): Promise<INostrEvent>;
+        fetchSubcommunites(options: SocialEventManagerReadOptions.IFetchSubcommunites): Promise<INostrEvent[]>;
+        fetchCommunityDetailMetadata(options: SocialEventManagerReadOptions.IFetchCommunityDetailMetadata): Promise<INostrEvent[]>;
         getCommunityUriToMembersMap(communities: ICommunityInfo[]): Promise<Record<string, ICommunityMember[]>>;
-        fetchCommunityStalls(options: SocialEventManagerReadOptions.IFetchCommunityStalls): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchCommunityProducts(options: SocialEventManagerReadOptions.IFetchCommunityProducts): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchCommunityOrders(options: SocialEventManagerReadOptions.IFetchCommunityOrders): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchBuyerOrders(options: SocialEventManagerReadOptions.IFetchBuyerOrders): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchMarketplaceOrderDetails(options: SocialEventManagerReadOptions.IFetchMarketplaceOrderDetails): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchMarketplaceProductDetails(options: SocialEventManagerReadOptions.IFetchMarketplaceProductDetails): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
-        fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrEvent[]>;
+        fetchCommunityStalls(options: SocialEventManagerReadOptions.IFetchCommunityStalls): Promise<INostrEvent[]>;
+        fetchCommunityProducts(options: SocialEventManagerReadOptions.IFetchCommunityProducts): Promise<INostrEvent[]>;
+        fetchCommunityOrders(options: SocialEventManagerReadOptions.IFetchCommunityOrders): Promise<INostrEvent[]>;
+        fetchBuyerOrders(options: SocialEventManagerReadOptions.IFetchBuyerOrders): Promise<INostrEvent[]>;
+        fetchMarketplaceOrderDetails(options: SocialEventManagerReadOptions.IFetchMarketplaceOrderDetails): Promise<INostrEvent[]>;
+        fetchMarketplaceProductDetails(options: SocialEventManagerReadOptions.IFetchMarketplaceProductDetails): Promise<INostrEvent[]>;
+        fetchPaymentActivities(options: SocialEventManagerReadOptions.IFetchPaymentActivities): Promise<INostrEvent[]>;
         fetchMarketplaceProductKey(options: SocialEventManagerReadOptions.IFetchMarketplaceProductKey): Promise<any>;
         fetchProductPurchaseStatus(options: SocialEventManagerReadOptions.IFetchProductPurchaseStatus): Promise<any>;
         fetchReservationsByRole(options: SocialEventManagerReadOptions.IFetchReservationsByRole): Promise<any>;
         fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<import("@scom/scom-social-sdk/interfaces/common.ts").INostrFetchEventsResponse>;
         fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
+        fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3156,6 +3175,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         fetchProductPurchaseStatus(options: SocialDataManagerOptions.IFetchProductPurchaseStatus): Promise<boolean>;
         fetchReservationsByRole(options: SocialDataManagerOptions.IFetchReservationsByRole): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").IReservation[]>;
         fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScore[]>;
+        fetchUserCommunityScoreLogs(pubKey: string, creatorId: string, communityId: string): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScoreLog[]>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;

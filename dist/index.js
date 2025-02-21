@@ -3548,7 +3548,7 @@ define("@scom/scom-social-sdk/interfaces/common.ts", ["require", "exports"], fun
 define("@scom/scom-social-sdk/interfaces/community.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.CommunityRole = exports.SubscriptionBundleType = exports.CampaignActivityType = exports.TokenType = exports.NftType = exports.PaymentMethod = exports.PaymentModel = exports.ProtectedMembershipPolicyType = exports.MembershipType = void 0;
+    exports.CommunityRole = exports.CommunityScoreType = exports.SubscriptionBundleType = exports.CampaignActivityType = exports.TokenType = exports.NftType = exports.PaymentMethod = exports.PaymentModel = exports.ProtectedMembershipPolicyType = exports.MembershipType = void 0;
     var MembershipType;
     (function (MembershipType) {
         MembershipType["Open"] = "Open";
@@ -3594,6 +3594,12 @@ define("@scom/scom-social-sdk/interfaces/community.ts", ["require", "exports"], 
         SubscriptionBundleType["MinimumDuration"] = "MinimumDuration";
         SubscriptionBundleType["ValidityPeriod"] = "ValidityPeriod";
     })(SubscriptionBundleType = exports.SubscriptionBundleType || (exports.SubscriptionBundleType = {}));
+    var CommunityScoreType;
+    (function (CommunityScoreType) {
+        CommunityScoreType["Like"] = "Like";
+        CommunityScoreType["Post"] = "Post";
+        CommunityScoreType["Reply"] = "Reply";
+    })(CommunityScoreType = exports.CommunityScoreType || (exports.CommunityScoreType = {}));
     var CommunityRole;
     (function (CommunityRole) {
         CommunityRole["Creator"] = "creator";
@@ -7106,6 +7112,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchUserCommunityScores(options) {
             return null; // Not supported
         }
+        async fetchUserCommunityScoreLogs(options) {
+            return null; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8072,6 +8081,40 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 };
             });
             return userCommunityScores || [];
+        }
+        async fetchUserCommunityScoreLogs(options) {
+            const { pubKey, creatorId, communityId } = options;
+            const decodedPubKey = pubKey.startsWith('npub1') ? index_4.Nip19.decode(pubKey).data : pubKey;
+            const communityPubkey = creatorId?.startsWith('npub1') ? index_4.Nip19.decode(creatorId).data : creatorId;
+            let msg = {
+                pubkey: decodedPubKey,
+                communityPubkey,
+                communityName: communityId,
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-community-score-logs', msg);
+            const eventMap = {};
+            for (let event of fetchEventsResponse.events) {
+                eventMap[event.id] = event;
+            }
+            const logs = fetchEventsResponse.data?.map(v => {
+                const event = eventMap[v.eventId];
+                let type;
+                if (event?.kind === 1) {
+                    type = event.tags.find(tag => tag[0] === "e") != null ? interfaces_4.CommunityScoreType.Reply : interfaces_4.CommunityScoreType.Post;
+                }
+                else if (event?.kind === 7) {
+                    type = interfaces_4.CommunityScoreType.Like;
+                }
+                return {
+                    creatorId: index_4.Nip19.npubEncode(v.communitiesPubkey),
+                    communityId: v.communitiesD,
+                    npub: index_4.Nip19.npubEncode(v.pubkey),
+                    point: v.score,
+                    type,
+                    createdAt: v.createdAt
+                };
+            });
+            return logs || [];
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -11169,6 +11212,14 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
         }
         async fetchUserCommunityScores(options) {
             const data = await this._socialEventManagerRead.fetchUserCommunityScores(options);
+            return data;
+        }
+        async fetchUserCommunityScoreLogs(pubKey, creatorId, communityId) {
+            const data = await this._socialEventManagerRead.fetchUserCommunityScoreLogs({
+                pubKey,
+                creatorId,
+                communityId
+            });
             return data;
         }
         async fetchRegions() {

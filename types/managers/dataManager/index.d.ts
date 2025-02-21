@@ -241,6 +241,7 @@ declare class SocialDataManager {
     fetchProductPurchaseStatus(options: SocialDataManagerOptions.IFetchProductPurchaseStatus): Promise<boolean>;
     fetchReservationsByRole(options: SocialDataManagerOptions.IFetchReservationsByRole): Promise<import("../../interfaces").IReservation[]>;
     fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores): Promise<import("../../interfaces").IUserCommunityScore[]>;
+    fetchUserCommunityScoreLogs(pubKey: string, creatorId: string, communityId: string): Promise<import("../../interfaces").IUserCommunityScoreLog[]>;
     fetchRegions(): Promise<IRegion[]>;
     fetchCurrencies(): Promise<ICurrency[]>;
     fetchCryptocurrencies(): Promise<import("../../interfaces").ICryptocurrency[]>;

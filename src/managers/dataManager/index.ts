@@ -3104,6 +3104,15 @@ class SocialDataManager {
         return data;
     }
 
+    async fetchUserCommunityScoreLogs(pubKey: string, creatorId: string, communityId: string) {
+        const data = await this._socialEventManagerRead.fetchUserCommunityScoreLogs({
+            pubKey,
+            creatorId,
+            communityId
+        });
+        return data;
+    }
+
     async fetchRegions() {
         return this.systemDataManager.fetchRegions();
     }

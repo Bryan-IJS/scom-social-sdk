@@ -1,5 +1,5 @@
 import { Nip19, Event, Keys } from "../core/index";
-import { CommunityRole, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
+import { CommunityRole, CommunityScoreType, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrEvent, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, IUserCommunityScoreLog, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
 import { INostrCommunicationManager, INostrRestAPIManager } from "./communication";
 import { SocialUtilsManager } from "./utilsManager";
 import { NostrEventManagerRead } from "./eventManagerRead";
@@ -1001,6 +1001,40 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             }
         });
         return userCommunityScores || [];
+    }
+
+    async fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs) {
+        const { pubKey, creatorId, communityId } = options;
+        const decodedPubKey = pubKey.startsWith('npub1') ? Nip19.decode(pubKey).data : pubKey;
+        const communityPubkey = creatorId?.startsWith('npub1') ? Nip19.decode(creatorId).data : creatorId;
+        let msg = {
+            pubkey: decodedPubKey,
+            communityPubkey,
+            communityName: communityId,
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-community-score-logs', msg);
+        const eventMap: Record<string, INostrEvent> = {};
+        for (let event of fetchEventsResponse.events) {
+            eventMap[event.id] = event;
+        }
+        const logs: IUserCommunityScoreLog[] = fetchEventsResponse.data?.map(v => {
+            const event = eventMap[v.eventId];
+            let type: CommunityScoreType;
+            if (event?.kind === 1) {
+                type = event.tags.find(tag => tag[0] === "e") != null ? CommunityScoreType.Reply : CommunityScoreType.Post;
+            } else if (event?.kind === 7) {
+                type = CommunityScoreType.Like;
+            }
+            return {
+                creatorId: Nip19.npubEncode(v.communitiesPubkey),
+                communityId: v.communitiesD,
+                npub: Nip19.npubEncode(v.pubkey),
+                point: v.score,
+                type,
+                createdAt: v.createdAt
+            }
+        })
+        return logs || [];
     }
 }
 
