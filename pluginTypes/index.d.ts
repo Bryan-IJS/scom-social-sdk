@@ -1505,11 +1505,13 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         point: number;
     }
     export interface IUserCommunityScoreLog {
+        id: string;
         creatorId: string;
         communityId: string;
         npub: string;
         point: number;
         type?: CommunityScoreType;
+        status: string;
         createdAt: number;
     }
 }

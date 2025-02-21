@@ -1026,11 +1026,13 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
                 type = CommunityScoreType.Like;
             }
             return {
+                id: v.guid,
                 creatorId: Nip19.npubEncode(v.communitiesPubkey),
                 communityId: v.communitiesD,
                 npub: Nip19.npubEncode(v.pubkey),
                 point: v.score,
                 type,
+                status: 'completed',
                 createdAt: v.createdAt
             }
         })

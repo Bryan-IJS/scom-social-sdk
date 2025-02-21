@@ -8106,11 +8106,13 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                     type = interfaces_4.CommunityScoreType.Like;
                 }
                 return {
+                    id: v.guid,
                     creatorId: index_4.Nip19.npubEncode(v.communitiesPubkey),
                     communityId: v.communitiesD,
                     npub: index_4.Nip19.npubEncode(v.pubkey),
                     point: v.score,
                     type,
+                    status: 'completed',
                     createdAt: v.createdAt
                 };
             });
