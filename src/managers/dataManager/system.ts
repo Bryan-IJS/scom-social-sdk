@@ -51,6 +51,11 @@ export class SystemDataManager {
         const result = await this.fetchListOfValues(url);
         if (result.success) {
             currencies = result.data;
+            currencies.push({
+                name: "Rewards Points",
+                code: "POINTS",
+                type: "rewards-points"
+            })
         }
         return currencies;
     }

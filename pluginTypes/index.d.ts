@@ -1757,8 +1757,13 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         tokenAddress?: string;
         walletAddress: string;
     }
+    export interface IRewardsPointsOption {
+        creatorId: string;
+        communityId: string;
+    }
     export interface IPayoutSettings {
         cryptoOptions: ICryptoPayoutOption[];
+        rewardsPoints: IRewardsPointsOption[];
         stripeAccountId?: string;
     }
     export interface IMarketplaceStallBasicInfo {
@@ -1853,6 +1858,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
     export interface ICurrency {
         code: string;
         name: string;
+        type: "crypto" | "fiat" | "rewards-points";
     }
     export interface ICryptocurrency {
         cryptoCode: string;
