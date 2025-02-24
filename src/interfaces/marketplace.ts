@@ -26,8 +26,14 @@ export interface ICryptoPayoutOption {
 	walletAddress: string; 
 }
 
+export interface IRewardsPointsOption {
+	creatorId: string;
+	communityId: string;
+}
+
 export interface IPayoutSettings {
 	cryptoOptions: ICryptoPayoutOption[];
+	rewardsPoints: IRewardsPointsOption[];
 	stripeAccountId?: string;
 }
 
@@ -129,6 +135,7 @@ export interface IRegion {
 export interface ICurrency {
 	code: string;
 	name: string;
+	type: "crypto" | "fiat" | "rewards-points";
 }
 
 export interface ICryptocurrency {
