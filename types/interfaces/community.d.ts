@@ -320,11 +320,13 @@ export interface IUserCommunityScore {
     point: number;
 }
 export interface IUserCommunityScoreLog {
+    id: string;
     creatorId: string;
     communityId: string;
     npub: string;
     point: number;
     type?: CommunityScoreType;
+    status: string;
     createdAt: number;
 }
 export {};

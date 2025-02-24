@@ -372,10 +372,12 @@ export interface IUserCommunityScore {
 }
 
 export interface IUserCommunityScoreLog {
+	id: string;
 	creatorId: string;
 	communityId: string;
 	npub: string;
 	point: number;
 	type?: CommunityScoreType;
+	status: string;
 	createdAt: number;
 }
