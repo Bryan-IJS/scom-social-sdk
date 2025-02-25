@@ -2,48 +2,58 @@ import { IMqttClientOptions } from "./common";
 import { ISocialEventManagerRead } from "./eventManagerRead";
 import { IMarketplaceOrder } from "./marketplace";
 export declare namespace SocialDataManagerOptions {
-    interface IFetchUserEthWalletAccountsInfo {
+    export interface IFetchUserEthWalletAccountsInfo {
         walletHash?: string;
         pubKey?: string;
     }
-    interface IPlaceMarketplaceOrder {
+    interface IRewardsPoints {
+        creatorId: string;
+        communityId: string;
+        points: number;
+    }
+    export interface IRedeemRewardsPoints extends IRewardsPoints {
+        eventId?: string;
+    }
+    export interface IPlaceMarketplaceOrder {
         merchantId: string;
         stallId: string;
         stallPublicKey: string;
         order: IMarketplaceOrder;
+        rewardsPoints?: IRewardsPoints;
     }
-    interface IFetchProductPostPurchaseContent {
+    export interface IFetchProductPostPurchaseContent {
         sellerPubkey: string;
         productId: string;
         postPurchaseContent: string;
         gatekeeperPubkey?: string;
         encryptedContentKey?: string;
     }
-    interface IFetchProductPurchaseStatus {
+    export interface IFetchProductPurchaseStatus {
         sellerPubkey: string;
         productId: string;
     }
-    interface IFetchCommunityProducts {
+    export interface IFetchCommunityProducts {
         creatorId: string;
         communityId: string;
         stallId?: string;
         decryptPostPurchaseContent?: boolean;
     }
-    interface IFetchMarketplaceProductDetails {
+    export interface IFetchMarketplaceProductDetails {
         stallId: string;
         productIds: string[];
         decryptPostPurchaseContent?: boolean;
     }
-    interface IFetchReservationsByRole {
+    export interface IFetchReservationsByRole {
         role: 'provider' | 'user';
         since?: number;
         until?: number;
     }
-    interface IFetchUserCommunityScores {
+    export interface IFetchUserCommunityScores {
         pubKey: string;
         creatorId?: string;
         communityId?: string;
     }
+    export {};
 }
 export interface ISocialDataManagerConfig {
     version?: 1 | 1.5 | 2;
