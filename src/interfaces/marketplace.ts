@@ -29,6 +29,8 @@ export interface ICryptoPayoutOption {
 export interface IRewardsPointsOption {
 	creatorId: string;
 	communityId: string;
+	exchangeRate: number;
+	upperBoundary?: number;
 }
 
 export interface IPayoutSettings {

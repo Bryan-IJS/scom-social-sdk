@@ -1760,6 +1760,8 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
     export interface IRewardsPointsOption {
         creatorId: string;
         communityId: string;
+        exchangeRate: number;
+        upperBoundary?: number;
     }
     export interface IPayoutSettings {
         cryptoOptions: ICryptoPayoutOption[];
