@@ -229,6 +229,7 @@ declare class SocialDataManager {
     fetchCommunityProducts(options: SocialDataManagerOptions.IFetchCommunityProducts): Promise<ICommunityProductInfo[]>;
     updateCommunityStall(creatorId: string, communityId: string, stall: IMarketplaceStall): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     updateCommunityProduct(creatorId: string, communityId: string, product: IMarketplaceProduct): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
+    redeemCommunityScore(options: SocialDataManagerOptions.IRedeemRewardsPoints): Promise<any>;
     placeMarketplaceOrder(options: SocialDataManagerOptions.IPlaceMarketplaceOrder): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     recordPaymentActivity(paymentActivity: IPaymentActivityV2): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     updateMarketplaceOrderStatus(merchantId: string, stallId: string, updateInfo: IMarketplaceOrderUpdateInfo): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;

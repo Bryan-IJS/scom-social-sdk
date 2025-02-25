@@ -10982,14 +10982,43 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             const result = await this._socialEventManagerWrite.updateCommunityProduct(creatorId, communityId, product);
             return result;
         }
+        async redeemCommunityScore(options) {
+            const authHeader = utilsManager_6.SocialUtilsManager.constructAuthHeader(this._privateKey);
+            let bodyData = {
+                communityPubkey: options.creatorId,
+                communityD: options.communityId,
+                score: options.points,
+                eventId: options.eventId
+            };
+            let url = `${this._publicIndexingRelay}/redeem-community-score`;
+            let result;
+            try {
+                let response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: authHeader
+                    },
+                    body: JSON.stringify(bodyData)
+                });
+                result = await response.json();
+            }
+            catch (err) {
+            }
+            return result;
+        }
         async placeMarketplaceOrder(options) {
-            const { merchantId, stallId, stallPublicKey, order } = options;
+            const { merchantId, stallId, stallPublicKey, order, rewardsPoints } = options;
             const result = await this._socialEventManagerWrite.placeMarketplaceOrder({
                 merchantId: merchantId,
                 stallId: stallId,
                 stallPublicKey: stallPublicKey,
                 order
             });
+            if (rewardsPoints) {
+                await this.redeemCommunityScore({ ...rewardsPoints, eventId: result.event.id });
+            }
             return result;
         }
         async recordPaymentActivity(paymentActivity) {
