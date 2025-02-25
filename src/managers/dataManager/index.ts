@@ -2867,16 +2867,21 @@ class SocialDataManager {
             eventId: options.eventId
         };
         let url = `${this._publicIndexingRelay}/redeem-community-score`;
-        let response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: authHeader
-            },
-            body: JSON.stringify(bodyData)
-        });
-        let result = await response.json();
+        let result;
+        try {
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader
+                },
+                body: JSON.stringify(bodyData)
+            });
+            result = await response.json();
+        }
+        catch (err) {
+        }
         return result;
     }
 
