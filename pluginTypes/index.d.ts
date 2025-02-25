@@ -1503,6 +1503,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         communityImageUrl?: string;
         npub: string;
         point: number;
+        redeemed: number;
     }
     export interface IUserCommunityScoreLog {
         id: string;

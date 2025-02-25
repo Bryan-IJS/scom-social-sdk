@@ -997,7 +997,8 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
                 communityId: v.communitiesD,
                 communityImageUrl: communityInfo?.avatarImgUrl || communityInfo?.bannerImgUrl,
                 npub: Nip19.npubEncode(v.pubkey),
-                point: v.score
+                point: v.score,
+                redeemed: v.redeemed
             }
         });
         return userCommunityScores || [];

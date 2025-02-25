@@ -8077,7 +8077,8 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                     communityId: v.communitiesD,
                     communityImageUrl: communityInfo?.avatarImgUrl || communityInfo?.bannerImgUrl,
                     npub: index_4.Nip19.npubEncode(v.pubkey),
-                    point: v.score
+                    point: v.score,
+                    redeemed: v.redeemed
                 };
             });
             return userCommunityScores || [];
