@@ -4583,7 +4583,8 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                     productId: item.product_id,
                     productName: item.product_name,
                     quantity: item.quantity,
-                    price: item.price
+                    price: item.price,
+                    reservationTime: item.reservation_time
                 }));
                 order = {
                     id: content.id,
@@ -5868,7 +5869,8 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
                     product_id: item.productId,
                     product_name: item.productName,
                     quantity: item.quantity,
-                    price: item.price
+                    price: item.price,
+                    reservation_time: item.reservationTime
                 };
             });
             let message = {

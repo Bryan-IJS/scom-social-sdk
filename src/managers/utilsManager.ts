@@ -540,7 +540,8 @@ class SocialUtilsManager {
                 productId: item.product_id,
                 productName: item.product_name,
                 quantity: item.quantity,
-                price: item.price
+                price: item.price,
+                reservationTime: item.reservation_time
             }))
             order = {
                 id: content.id,
