@@ -1503,6 +1503,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         communityImageUrl?: string;
         npub: string;
         point: number;
+        redeemed: number;
     }
     export interface IUserCommunityScoreLog {
         id: string;
@@ -1760,6 +1761,8 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
     export interface IRewardsPointsOption {
         creatorId: string;
         communityId: string;
+        exchangeRate: number;
+        upperBoundary?: number;
     }
     export interface IPayoutSettings {
         cryptoOptions: ICryptoPayoutOption[];

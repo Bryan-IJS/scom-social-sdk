@@ -369,6 +369,7 @@ export interface IUserCommunityScore {
 	communityImageUrl?: string;
 	npub: string;
 	point: number;
+	redeemed: number;
 }
 
 export interface IUserCommunityScoreLog {
