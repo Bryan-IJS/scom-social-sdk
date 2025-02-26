@@ -4581,6 +4581,7 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                 const content = this.parseContent(contentStr);
                 const items = content.items?.map(item => ({
                     productId: item.product_id,
+                    variantId: item.variant_id,
                     productName: item.product_name,
                     quantity: item.quantity,
                     price: item.price,
@@ -5867,6 +5868,7 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             let orderItems = order.items.map(item => {
                 return {
                     product_id: item.productId,
+                    variant_id: item.variantId,
                     product_name: item.productName,
                     quantity: item.quantity,
                     price: item.price,

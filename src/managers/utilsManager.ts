@@ -538,6 +538,7 @@ class SocialUtilsManager {
             const content = this.parseContent(contentStr);
             const items: IMarketplaceOrderItem[] = content.items?.map(item => ({
                 productId: item.product_id,
+                variantId: item.variant_id,
                 productName: item.product_name,
                 quantity: item.quantity,
                 price: item.price,

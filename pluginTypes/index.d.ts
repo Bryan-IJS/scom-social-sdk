@@ -1874,6 +1874,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
     }
     export interface IMarketplaceOrderItem {
         productId: string;
+        variantId?: string;
         productName?: string;
         quantity: number;
         price?: number;
