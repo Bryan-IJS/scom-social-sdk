@@ -138,6 +138,7 @@ export interface ICryptocurrency {
 }
 export interface IMarketplaceOrderItem {
     productId: string;
+    variantId?: string;
     productName?: string;
     quantity: number;
     price?: number;

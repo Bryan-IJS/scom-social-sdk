@@ -987,6 +987,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         let orderItems = order.items.map(item => {
             return {
                 product_id: item.productId,
+                variant_id: item.variantId,
                 product_name: item.productName,
                 quantity: item.quantity,
                 price: item.price,
