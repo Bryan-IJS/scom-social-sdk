@@ -2886,15 +2886,15 @@ class SocialDataManager {
     }
 
     async placeMarketplaceOrder(options: SocialDataManagerOptions.IPlaceMarketplaceOrder) {
-        const {merchantId, stallId, stallPublicKey, order, rewardsPoints} = options;
+        const {merchantId, stallId, stallPublicKey, order} = options;
         const result = await this._socialEventManagerWrite.placeMarketplaceOrder({
             merchantId: merchantId,
             stallId: stallId,
             stallPublicKey: stallPublicKey,
             order
         });
-        if (rewardsPoints) {
-            await this.redeemCommunityScore({ ...rewardsPoints, eventId: result.event.id });
+        if (order.rewardsPoints) {
+            await this.redeemCommunityScore({ ...order.rewardsPoints, eventId: result.event.id })
         }
         return result;
     }

@@ -1879,6 +1879,11 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         price?: number;
         reservationTime?: number;
     }
+    export interface IRewardsPoints {
+        creatorId: string;
+        communityId: string;
+        points: number;
+    }
     export interface IMarketplaceOrder {
         id: string;
         name?: string;
@@ -1894,6 +1899,7 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         shippingId?: string;
         shippingCost?: number;
         totalAmount?: number;
+        rewardsPoints?: IRewardsPoints;
     }
     export interface IRetrievedMarketplaceOrder extends IMarketplaceOrder {
         stallId?: string;
@@ -2266,58 +2272,54 @@ declare module "@scom/scom-social-sdk/interfaces/dataManager.ts" {
     import { ISocialEventManagerRead } from "@scom/scom-social-sdk/interfaces/eventManagerRead.ts";
     import { IMarketplaceOrder } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
     export namespace SocialDataManagerOptions {
-        export interface IFetchUserEthWalletAccountsInfo {
+        interface IFetchUserEthWalletAccountsInfo {
             walletHash?: string;
             pubKey?: string;
         }
-        interface IRewardsPoints {
+        interface IRedeemRewardsPoints {
             creatorId: string;
             communityId: string;
             points: number;
-        }
-        export interface IRedeemRewardsPoints extends IRewardsPoints {
             eventId?: string;
         }
-        export interface IPlaceMarketplaceOrder {
+        interface IPlaceMarketplaceOrder {
             merchantId: string;
             stallId: string;
             stallPublicKey: string;
             order: IMarketplaceOrder;
-            rewardsPoints?: IRewardsPoints;
         }
-        export interface IFetchProductPostPurchaseContent {
+        interface IFetchProductPostPurchaseContent {
             sellerPubkey: string;
             productId: string;
             postPurchaseContent: string;
             gatekeeperPubkey?: string;
             encryptedContentKey?: string;
         }
-        export interface IFetchProductPurchaseStatus {
+        interface IFetchProductPurchaseStatus {
             sellerPubkey: string;
             productId: string;
         }
-        export interface IFetchCommunityProducts {
+        interface IFetchCommunityProducts {
             creatorId: string;
             communityId: string;
             stallId?: string;
             decryptPostPurchaseContent?: boolean;
         }
-        export interface IFetchMarketplaceProductDetails {
+        interface IFetchMarketplaceProductDetails {
             stallId: string;
             productIds: string[];
             decryptPostPurchaseContent?: boolean;
         }
-        export interface IFetchReservationsByRole {
+        interface IFetchReservationsByRole {
             role: 'provider' | 'user';
             since?: number;
             until?: number;
         }
-        export interface IFetchUserCommunityScores {
+        interface IFetchUserCommunityScores {
             pubKey: string;
             creatorId?: string;
             communityId?: string;
         }
-        export {};
     }
     export interface ISocialDataManagerConfig {
         version?: 1 | 1.5 | 2;
