@@ -159,6 +159,12 @@ export interface IMarketplaceOrderItem {
 	reservationTime?: number;
 }
 
+export interface IRewardsPoints {
+	creatorId: string;
+	communityId: string;
+	points: number;
+}
+
 export interface IMarketplaceOrder {
 	id: string;
 	name?: string;
@@ -174,6 +180,7 @@ export interface IMarketplaceOrder {
 	shippingId?: string;
 	shippingCost?: number;
 	totalAmount?: number;
+	rewardsPoints?: IRewardsPoints;
 }
 
 export interface IRetrievedMarketplaceOrder extends IMarketplaceOrder {

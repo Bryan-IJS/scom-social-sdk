@@ -994,8 +994,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
                 reservation_time: item.reservationTime
             }
         });
-        
-        let message = {
+        let message: any = {
             id: order.id,
             type: 0,
             contact: order.contact,
@@ -1013,6 +1012,9 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         }
         if (order.message) {
             message['message'] = order.message;
+        }
+        if (order.rewardsPoints) {
+            message.rewardsPoints = order.rewardsPoints;
         }
         const {
             encryptedMessage,

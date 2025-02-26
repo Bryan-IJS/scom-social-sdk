@@ -7,12 +7,10 @@ export namespace SocialDataManagerOptions {
 		walletHash?: string;
 		pubKey?: string;
 	}
-	interface IRewardsPoints {
+	export interface IRedeemRewardsPoints {
 		creatorId: string;
 		communityId: string;
 		points: number;
-	}
-	export interface IRedeemRewardsPoints extends IRewardsPoints {
 		eventId?: string;
 	}
 	export interface IPlaceMarketplaceOrder {
@@ -20,7 +18,6 @@ export namespace SocialDataManagerOptions {
 		stallId: string;
 		stallPublicKey: string;
 		order: IMarketplaceOrder;
-		rewardsPoints?: IRewardsPoints
 	}
 	export interface IFetchProductPostPurchaseContent {
 		sellerPubkey: string;

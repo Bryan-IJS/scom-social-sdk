@@ -5894,6 +5894,9 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             if (order.message) {
                 message['message'] = order.message;
             }
+            if (order.rewardsPoints) {
+                message.rewardsPoints = order.rewardsPoints;
+            }
             const { encryptedMessage, encryptedMessageKey } = await utilsManager_2.SocialUtilsManager.encryptMessageWithGeneratedKey(this._privateKey, stallPublicKey, JSON.stringify(message));
             // const encryptedMessage = await SocialUtilsManager.encryptMessage(this._privateKey, decodedMerchantPubkey, JSON.stringify(message));
             let encodedScpData = utilsManager_2.SocialUtilsManager.utf8ToBase64('$scp:' + JSON.stringify({
@@ -11011,15 +11014,15 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             return result;
         }
         async placeMarketplaceOrder(options) {
-            const { merchantId, stallId, stallPublicKey, order, rewardsPoints } = options;
+            const { merchantId, stallId, stallPublicKey, order } = options;
             const result = await this._socialEventManagerWrite.placeMarketplaceOrder({
                 merchantId: merchantId,
                 stallId: stallId,
                 stallPublicKey: stallPublicKey,
                 order
             });
-            if (rewardsPoints) {
-                await this.redeemCommunityScore({ ...rewardsPoints, eventId: result.event.id });
+            if (order.rewardsPoints) {
+                await this.redeemCommunityScore({ ...order.rewardsPoints, eventId: result.event.id });
             }
             return result;
         }
