@@ -1,5 +1,5 @@
 import { INostrEvent } from "./common";
-import { IPaymentActivityV2, IUserProfile } from "./misc";
+import { IPaymentActivityV2, IRewardsPoints, IUserProfile } from "./misc";
 export declare enum MarketplaceProductType {
     Physical = "Physical",
     Digital = "Digital",
@@ -143,11 +143,6 @@ export interface IMarketplaceOrderItem {
     quantity: number;
     price?: number;
     reservationTime?: number;
-}
-export interface IRewardsPoints {
-    creatorId: string;
-    communityId: string;
-    points: number;
 }
 export interface IMarketplaceOrder {
     id: string;

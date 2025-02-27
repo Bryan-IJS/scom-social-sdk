@@ -1014,7 +1014,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             message['message'] = order.message;
         }
         if (order.rewardsPoints) {
-            message.rewardsPoints = order.rewardsPoints;
+            message['rewards_points'] = order.rewardsPoints;
         }
         const {
             encryptedMessage,
@@ -1151,7 +1151,8 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             paymentMethod,
             referenceId, 
             createdAt,
-            replyToEventId
+            replyToEventId,
+            rewardsPoints
         } = options;
         const decodedSenderPubkey = sender.startsWith('npub1') ? Nip19.decode(sender).data as string : sender;
         const decodedRecipientPubkey = recipient.startsWith('npub1') ? Nip19.decode(recipient).data as string : recipient;
@@ -1177,6 +1178,9 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         }
         if (stallId) {
             message['stall_id'] = stallId;
+        }
+        if (rewardsPoints) {
+            message['rewards_points'] = rewardsPoints;
         }
         const encryptedMessage = await SocialUtilsManager.encryptMessage(this._privateKey, decodedRecipientPubkey, JSON.stringify(message));
         let event = {
