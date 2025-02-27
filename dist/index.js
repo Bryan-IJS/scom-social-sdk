@@ -11027,7 +11027,14 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             return result;
         }
         async recordPaymentActivity(paymentActivity) {
+            const { rewardsPoints } = paymentActivity;
             const result = await this._socialEventManagerWrite.recordPaymentActivity(paymentActivity);
+            if (rewardsPoints) {
+                await this.redeemCommunityScore({
+                    ...rewardsPoints,
+                    eventId: result.event.id
+                });
+            }
             return result;
         }
         async updateMarketplaceOrderStatus(merchantId, stallId, updateInfo) {

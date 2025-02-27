@@ -2897,7 +2897,14 @@ class SocialDataManager {
     }
 
     async recordPaymentActivity(paymentActivity: IPaymentActivityV2) {
+        const { rewardsPoints } = paymentActivity;
         const result = await this._socialEventManagerWrite.recordPaymentActivity(paymentActivity);
+        if (rewardsPoints) {
+            await this.redeemCommunityScore({
+                ...rewardsPoints,
+                eventId: result.event.id
+            })
+        }
         return result;
     }
 
