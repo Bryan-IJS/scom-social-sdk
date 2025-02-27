@@ -157,6 +157,12 @@ export interface IPaymentActivity {
 	createdAt: number;
 }
 
+export interface IRewardsPoints {
+	creatorId: string;
+	communityId: string;
+	points: number;
+}
+
 export interface IPaymentActivityV2 {
 	id: string;
 	sender: string;
@@ -170,6 +176,7 @@ export interface IPaymentActivityV2 {
 	paymentMethod?: "Stripe" | "EVM" | "TON" | "RewardsPoints";
 	referenceId?: string;
 	createdAt?: number;
+	rewardsPoints?: IRewardsPoints;
 }
 
 export interface IEthWalletAccountsInfo {

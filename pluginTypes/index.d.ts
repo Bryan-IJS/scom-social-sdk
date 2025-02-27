@@ -1698,6 +1698,11 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         status: string;
         createdAt: number;
     }
+    export interface IRewardsPoints {
+        creatorId: string;
+        communityId: string;
+        points: number;
+    }
     export interface IPaymentActivityV2 {
         id: string;
         sender: string;
@@ -1711,6 +1716,7 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         paymentMethod?: "Stripe" | "EVM" | "TON" | "RewardsPoints";
         referenceId?: string;
         createdAt?: number;
+        rewardsPoints?: IRewardsPoints;
     }
     export interface IEthWalletAccountsInfo {
         masterWalletSignature: string;
@@ -1735,7 +1741,7 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
 /// <amd-module name="@scom/scom-social-sdk/interfaces/marketplace.ts" />
 declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
     import { INostrEvent } from "@scom/scom-social-sdk/interfaces/common.ts";
-    import { IPaymentActivityV2, IUserProfile } from "@scom/scom-social-sdk/interfaces/misc.ts";
+    import { IPaymentActivityV2, IRewardsPoints, IUserProfile } from "@scom/scom-social-sdk/interfaces/misc.ts";
     export enum MarketplaceProductType {
         Physical = "Physical",
         Digital = "Digital",
@@ -1879,11 +1885,6 @@ declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
         quantity: number;
         price?: number;
         reservationTime?: number;
-    }
-    export interface IRewardsPoints {
-        creatorId: string;
-        communityId: string;
-        points: number;
     }
     export interface IMarketplaceOrder {
         id: string;

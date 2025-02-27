@@ -5895,7 +5895,7 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
                 message['message'] = order.message;
             }
             if (order.rewardsPoints) {
-                message.rewardsPoints = order.rewardsPoints;
+                message['rewards_points'] = order.rewardsPoints;
             }
             const { encryptedMessage, encryptedMessageKey } = await utilsManager_2.SocialUtilsManager.encryptMessageWithGeneratedKey(this._privateKey, stallPublicKey, JSON.stringify(message));
             // const encryptedMessage = await SocialUtilsManager.encryptMessage(this._privateKey, decodedMerchantPubkey, JSON.stringify(message));
@@ -6013,7 +6013,7 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             return result;
         }
         async recordPaymentActivity(options) {
-            const { id, sender, recipient, amount, currencyCode, networkCode, stallId, orderId, paymentMethod, referenceId, createdAt, replyToEventId } = options;
+            const { id, sender, recipient, amount, currencyCode, networkCode, stallId, orderId, paymentMethod, referenceId, createdAt, replyToEventId, rewardsPoints } = options;
             const decodedSenderPubkey = sender.startsWith('npub1') ? index_2.Nip19.decode(sender).data : sender;
             const decodedRecipientPubkey = recipient.startsWith('npub1') ? index_2.Nip19.decode(recipient).data : recipient;
             let message = {
@@ -6038,6 +6038,9 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             }
             if (stallId) {
                 message['stall_id'] = stallId;
+            }
+            if (rewardsPoints) {
+                message['rewards_points'] = rewardsPoints;
             }
             const encryptedMessage = await utilsManager_2.SocialUtilsManager.encryptMessage(this._privateKey, decodedRecipientPubkey, JSON.stringify(message));
             let event = {
@@ -11021,13 +11024,17 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 stallPublicKey: stallPublicKey,
                 order
             });
-            if (order.rewardsPoints) {
-                await this.redeemCommunityScore({ ...order.rewardsPoints, eventId: result.event.id });
-            }
             return result;
         }
         async recordPaymentActivity(paymentActivity) {
+            const { rewardsPoints } = paymentActivity;
             const result = await this._socialEventManagerWrite.recordPaymentActivity(paymentActivity);
+            if (rewardsPoints) {
+                await this.redeemCommunityScore({
+                    ...rewardsPoints,
+                    eventId: result.event.id
+                });
+            }
             return result;
         }
         async updateMarketplaceOrderStatus(merchantId, stallId, updateInfo) {
