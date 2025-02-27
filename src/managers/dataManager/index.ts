@@ -3073,13 +3073,39 @@ class SocialDataManager {
 
     async fetchMarketplaceProductDetails(options: SocialDataManagerOptions.IFetchMarketplaceProductDetails) {
         const { stallId, productIds, decryptPostPurchaseContent } = options;
-        const productEvents = await this._socialEventManagerRead.fetchMarketplaceProductDetails({
+        const productDetailsResult = await this._socialEventManagerRead.fetchMarketplaceProductDetails({
             stallId: stallId,
             productIds: productIds
         });
+        const productEvents = productDetailsResult.filter(event => event.kind === 30018);
+        const quantityEvents = productDetailsResult.filter(event => event.kind === 10000113);
+        let productIdToQuantityMap: Record<string, number> = {};
+        for (let event of quantityEvents) {
+            const content = SocialUtilsManager.parseContent(event.content);
+            if (content.variant_id) {
+                productIdToQuantityMap[content.product_id + ':' + content.variant_id] = content.quantity;
+            }
+            else {
+                productIdToQuantityMap[content.product_id] = content.quantity;
+            }
+        }
         let products: ICommunityProductInfo[] = [];
         for (let event of productEvents) {
             const productInfo = SocialUtilsManager.extractCommunityProductInfo(event);
+            if (productInfo.reservations?.length > 0) {
+                for (let reservation of productInfo.reservations) {
+                    const id = productInfo.id + ':' + reservation.id;
+                    if (productIdToQuantityMap[id]) {
+                        reservation.capacity = productIdToQuantityMap[id];
+                    }
+                }
+            }
+            else {
+                if (productIdToQuantityMap[productInfo.id]) { 
+                productInfo.quantity = productIdToQuantityMap[productInfo.id];
+                }
+            }
+        
             if (decryptPostPurchaseContent) {
                 productInfo.postPurchaseContent = await this.fetchProductPostPurchaseContent({
                     sellerPubkey: productInfo.eventData.pubkey,
