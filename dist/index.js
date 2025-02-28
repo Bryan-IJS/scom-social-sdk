@@ -4599,6 +4599,7 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                     shippingCost: content.shipping_cost,
                     totalAmount: content.total_amount,
                     createdAt: event.created_at,
+                    rewardsPoints: content.rewards_points
                 };
             }
             catch (e) {
@@ -4639,7 +4640,8 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                     orderId: content.id,
                     paymentMethod: paymentMethod,
                     referenceId: content.reference_id,
-                    createdAt: event.created_at
+                    createdAt: event.created_at,
+                    rewardsPoints: content.rewards_points
                 };
             }
             catch (e) {
