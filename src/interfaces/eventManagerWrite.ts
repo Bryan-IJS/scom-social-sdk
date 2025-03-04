@@ -49,6 +49,15 @@ export namespace SocialEventManagerWriteOptions {
     export interface IRecordPaymentActivity extends IPaymentActivityV2 {
         replyToEventId?: string;
     }
+
+    export interface ICreateStakeRequestEvent {
+        chainId: number;
+        token: any;
+        amount: string;
+        creatorId?: string;
+        communityId?: string;
+        message?: string;
+    }
 }
 
 export interface ISocialEventManagerWriteResult {
@@ -92,4 +101,6 @@ export interface ISocialEventManagerWrite {
     requestMarketplaceOrderPayment(options: SocialEventManagerWriteOptions.IRequestMarketplaceOrderPayment): Promise<ISocialEventManagerWriteResult>;
     updateMarketplaceOrderStatus(options: SocialEventManagerWriteOptions.IUpdatetMarketplaceOrderStatus): Promise<ISocialEventManagerWriteResult>;
     recordPaymentActivity(options: SocialEventManagerWriteOptions.IRecordPaymentActivity): Promise<ISocialEventManagerWriteResult>;
+    createStakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
+    createUnstakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
 }

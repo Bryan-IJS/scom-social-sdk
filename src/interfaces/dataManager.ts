@@ -51,6 +51,14 @@ export namespace SocialDataManagerOptions {
 		creatorId?: string;
 		communityId?: string;
 	}
+    export interface ICreateStakeRequest {
+        chainId: number;
+        token: any;
+        amount: string;
+        creatorId?: string;
+        communityId?: string;
+		message?: string;
+    }
 }
 
 export interface ISocialDataManagerConfig {

@@ -2401,6 +2401,25 @@ class SocialDataManager {
         return price;
     }
 
+    async createStakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest) {
+        const result = await this._socialEventManagerWrite.createStakeRequestEvent(options);
+        return result;
+    }
+    
+    async createUnstakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest) {
+        const result = await this._socialEventManagerWrite.createUnstakeRequestEvent(options);
+        return result;
+    }
+
+    async fetchTokenActivities(pubkey: string, since?: number, until?: number) {
+        const tokenActivities = await this._socialEventManagerRead.fetchTokenActivities({
+            pubkey,
+            since,
+            until
+        });
+        return tokenActivities;
+    }
+
     async fetchUserPrivateRelay(pubkey: string) {
         const url = `${this._publicIndexingRelay}/private-relay?pubkey=${pubkey}`;
         const response = await fetch(url);

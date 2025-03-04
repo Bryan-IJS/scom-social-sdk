@@ -200,3 +200,15 @@ export interface IFetchPaymentActivitiesOptions {
 	since?: number;
 	until?: number;
 }
+
+export interface ITokenActivity {
+	chainId: number;
+	token: any;
+	amount: string;
+	creatorId?: string;
+	communityId?: string;
+	message?: string;
+	action: string;
+	status: string;
+	createdAt: number;
+}
