@@ -199,6 +199,9 @@ declare class SocialDataManager {
     getLightningBalance(): Promise<any>;
     isLightningAvailable(): boolean;
     getBitcoinPrice(): Promise<any>;
+    createStakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
+    createUnstakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
+    fetchTokenActivities(pubkey: string, since?: number, until?: number): Promise<import("../../interfaces").ITokenActivity[]>;
     fetchUserPrivateRelay(pubkey: string): Promise<any>;
     fetchApps(keyword?: string): Promise<any>;
     fetchApp(pubkey: string, id: string): Promise<any>;

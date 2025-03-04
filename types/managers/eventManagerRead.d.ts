@@ -1,4 +1,4 @@
-import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, INostrEvent, IPaymentActivity, ISocialEventManagerRead, SocialEventManagerReadOptions } from "../interfaces";
+import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, INostrEvent, IPaymentActivity, ISocialEventManagerRead, ITokenActivity, SocialEventManagerReadOptions } from "../interfaces";
 import { INostrCommunicationManager } from "./communication";
 declare class NostrEventManagerRead implements ISocialEventManagerRead {
     protected _nostrCommunicationManager: INostrCommunicationManager;
@@ -76,5 +76,6 @@ declare class NostrEventManagerRead implements ISocialEventManagerRead {
     fetchCommunityLeaderboard(options: SocialEventManagerReadOptions.IFetchCommunityLeaderboard): Promise<any>;
     fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<any>;
     fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<any>;
+    fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
 }
 export { NostrEventManagerRead };

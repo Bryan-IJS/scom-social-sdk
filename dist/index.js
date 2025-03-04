@@ -6079,6 +6079,64 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             const result = await this.handleEventSubmission(event);
             return result;
         }
+        async createStakeRequestEvent(options) {
+            const { amount, creatorId, communityId } = options;
+            const request = btoa(JSON.stringify({ ...options }));
+            let hash = index_2.Event.getPaymentRequestHash(request);
+            let event = {
+                "kind": 9743,
+                "created_at": Math.round(Date.now() / 1000),
+                "content": request,
+                "tags": [
+                    [
+                        "r",
+                        hash
+                    ],
+                    [
+                        "amount",
+                        amount
+                    ]
+                ]
+            };
+            if (creatorId && communityId) {
+                const communityUri = utilsManager_2.SocialUtilsManager.getCommunityUri(creatorId, communityId);
+                event.tags.push([
+                    "a",
+                    communityUri
+                ]);
+            }
+            const result = await this.handleEventSubmission(event);
+            return result;
+        }
+        async createUnstakeRequestEvent(options) {
+            const { amount, creatorId, communityId } = options;
+            const request = btoa(JSON.stringify({ ...options }));
+            let hash = index_2.Event.getPaymentRequestHash(request);
+            let event = {
+                "kind": 9744,
+                "created_at": Math.round(Date.now() / 1000),
+                "content": request,
+                "tags": [
+                    [
+                        "r",
+                        hash
+                    ],
+                    [
+                        "amount",
+                        amount
+                    ]
+                ]
+            };
+            if (creatorId && communityId) {
+                const communityUri = utilsManager_2.SocialUtilsManager.getCommunityUri(creatorId, communityId);
+                event.tags.push([
+                    "a",
+                    communityUri
+                ]);
+            }
+            const result = await this.handleEventSubmission(event);
+            return result;
+        }
     }
     exports.NostrEventManagerWrite = NostrEventManagerWrite;
 });
@@ -7127,6 +7185,36 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchUserCommunityScoreLogs(options) {
             return null; // Not supported
         }
+        async fetchTokenActivities(options) {
+            let { pubkey, since, until } = options;
+            if (!since)
+                since = 0;
+            if (!until)
+                until = 0;
+            let stakingRequestEventsReq = {
+                kinds: [9743, 9744],
+                authors: [pubkey],
+                limit: 20
+            };
+            if (until === 0) {
+                stakingRequestEventsReq.since = since;
+            }
+            else {
+                stakingRequestEventsReq.until = until;
+            }
+            const paymentRequestEvents = await this._nostrCommunicationManager.fetchEvents(stakingRequestEventsReq);
+            const activities = [];
+            for (let requestEvent of paymentRequestEvents.events) {
+                const request = JSON.parse(atob(requestEvent.content));
+                activities.push({
+                    ...request,
+                    action: requestEvent.kind === 9743 ? 'stake' : 'unstake',
+                    status: 'completed',
+                    createdAt: requestEvent.created_at
+                });
+            }
+            return activities;
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8130,6 +8218,36 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 };
             });
             return logs || [];
+        }
+        async fetchTokenActivities(options) {
+            let { pubkey, since, until } = options;
+            if (!since)
+                since = 0;
+            if (!until)
+                until = 0;
+            let stakingRequestEventsReq = {
+                kinds: [9743, 9744],
+                authors: [pubkey],
+                limit: 20
+            };
+            if (until === 0) {
+                stakingRequestEventsReq.since = since;
+            }
+            else {
+                stakingRequestEventsReq.until = until;
+            }
+            const paymentRequestEvents = await this._nostrCommunicationManager.fetchEvents(stakingRequestEventsReq);
+            const activities = [];
+            for (let requestEvent of paymentRequestEvents.events) {
+                const request = JSON.parse(atob(requestEvent.content));
+                activities.push({
+                    ...request,
+                    action: requestEvent.kind === 9743 ? 'stake' : 'unstake',
+                    status: 'completed',
+                    createdAt: requestEvent.created_at
+                });
+            }
+            return activities;
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -10568,6 +10686,22 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             const result = await response.json();
             const price = result.quotes.USD.price;
             return price;
+        }
+        async createStakeRequest(options) {
+            const result = await this._socialEventManagerWrite.createStakeRequestEvent(options);
+            return result;
+        }
+        async createUnstakeRequest(options) {
+            const result = await this._socialEventManagerWrite.createUnstakeRequestEvent(options);
+            return result;
+        }
+        async fetchTokenActivities(pubkey, since, until) {
+            const tokenActivities = await this._socialEventManagerRead.fetchTokenActivities({
+                pubkey,
+                since,
+                until
+            });
+            return tokenActivities;
         }
         async fetchUserPrivateRelay(pubkey) {
             const url = `${this._publicIndexingRelay}/private-relay?pubkey=${pubkey}`;

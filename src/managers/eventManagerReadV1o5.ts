@@ -1,5 +1,5 @@
 import { Nip19, Event, Keys } from "../core/index";
-import { CommunityRole, CommunityScoreType, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrEvent, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, IUserCommunityScore, IUserCommunityScoreLog, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
+import { CommunityRole, CommunityScoreType, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrEvent, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, ITokenActivity, IUserCommunityScore, IUserCommunityScoreLog, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
 import { INostrCommunicationManager, INostrRestAPIManager } from "./communication";
 import { SocialUtilsManager } from "./utilsManager";
 import { NostrEventManagerRead } from "./eventManagerRead";
@@ -1038,6 +1038,35 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             }
         })
         return logs || [];
+    }
+
+    async fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent) {
+        let {pubkey, since, until} = options;
+        if (!since) since = 0;
+        if (!until) until = 0;
+        let stakingRequestEventsReq: any = {
+            kinds: [9743, 9744],
+            authors: [pubkey],
+            limit: 20
+        };
+        if (until === 0) {
+            stakingRequestEventsReq.since = since;
+        }
+        else {
+            stakingRequestEventsReq.until = until;
+        }
+        const paymentRequestEvents = await this._nostrCommunicationManager.fetchEvents(stakingRequestEventsReq);
+        const activities: ITokenActivity[] = [];
+        for (let requestEvent of paymentRequestEvents.events) {
+            const request = JSON.parse(atob(requestEvent.content));
+            activities.push({
+                ...request,
+                action: requestEvent.kind === 9743 ? 'stake' : 'unstake',
+                status: 'completed',
+                createdAt: requestEvent.created_at
+            })
+        }
+        return activities;
     }
 }
 

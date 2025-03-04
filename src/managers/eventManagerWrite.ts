@@ -1,23 +1,23 @@
 import { Nip19, Event, Keys } from "../core/index";
-import { 
-    CalendarEventType, 
-    IChannelInfo, 
-    ICommunityBasicInfo, 
-    ICommunityInfo, 
-    IConversationPath, 
-    ILongFormContentInfo, 
-    INewCalendarEventPostInfo, 
-    INewChannelMessageInfo, 
-    INewCommunityPostInfo, 
-    INostrMetadataContent, 
-    INostrRestAPIManager, 
-    IRelayConfig, 
-    ISocialEventManagerWrite, 
-    IMarketplaceStall, 
-    IUpdateCalendarEventInfo, 
-    MembershipType, 
-    ScpStandardId, 
-    SocialEventManagerWriteOptions, 
+import {
+    CalendarEventType,
+    IChannelInfo,
+    ICommunityBasicInfo,
+    ICommunityInfo,
+    IConversationPath,
+    ILongFormContentInfo,
+    INewCalendarEventPostInfo,
+    INewChannelMessageInfo,
+    INewCommunityPostInfo,
+    INostrMetadataContent,
+    INostrRestAPIManager,
+    IRelayConfig,
+    ISocialEventManagerWrite,
+    IMarketplaceStall,
+    IUpdateCalendarEventInfo,
+    MembershipType,
+    ScpStandardId,
+    SocialEventManagerWriteOptions,
     IMarketplaceProduct,
     MarketplaceProductType
 } from "../interfaces";
@@ -29,7 +29,7 @@ import { SocialUtilsManager } from "./utilsManager";
 function convertUnixTimestampToDate(timestamp: number): string {
     const date = new Date(timestamp * 1000);
     const year = date.getFullYear();
-    const month = ("0" + (date.getMonth() + 1)).slice(-2); 
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
 }
@@ -60,7 +60,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             let tagItem;
             if (i === 0) {
                 tagItem = [
-                    "e", 
+                    "e",
                     decodedNoteId,
                     "",
                     "root"
@@ -68,17 +68,17 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             }
             else if (i === conversationPath.noteIds.length - 1) {
                 tagItem = [
-                    "e", 
+                    "e",
                     decodedNoteId,
                     "",
                     "reply"
                 ];
-            } 
+            }
             else {
                 tagItem = [
-                    "e", 
+                    "e",
                     decodedNoteId
-                ];          
+                ];
             }
             tags.push(tagItem);
         }
@@ -92,7 +92,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         return tags;
     }
 
-    private async handleEventSubmission(event: Event.EventTemplate<number>, options?: {privateKey?: string, mainRelayOnly?: boolean}) {
+    private async handleEventSubmission(event: Event.EventTemplate<number>, options?: { privateKey?: string, mainRelayOnly?: boolean }) {
         let mainRelayOnly = options?.mainRelayOnly;
         let privateKey = options?.privateKey || this._privateKey;
         const verifiedEvent = Event.finishEvent(event, privateKey);
@@ -104,7 +104,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
                 setTimeout(async () => {
                     try {
                         await Promise.all(otherRelays.map(manager => manager.submitEvent(verifiedEvent, authHeader)));
-                    } 
+                    }
                     catch (error) {
                         console.error('Error submitting to other relays:', error);
                     }
@@ -132,7 +132,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         }
         const result = await this.handleEventSubmission(event);
         return result;
-    }  
+    }
 
     async postNote(content: string, conversationPath?: IConversationPath, createdAt?: number) {
         let event = {
@@ -273,7 +273,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
                 "avatar",
                 info.avatarImgUrl
             ]);
-        }        
+        }
         if (info.rules) {
             event.tags.push([
                 "rules",
@@ -428,7 +428,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         const result = await this.handleEventSubmission(event);
         return result;
     }
-  
+
     async sendMessage(options: SocialEventManagerWriteOptions.ISendMessage) {
         const { receiver, encryptedMessage, replyToEventId } = options;
         const decodedPubKey = receiver.startsWith('npub1') ? Nip19.decode(receiver).data : receiver;
@@ -508,7 +508,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         const result = await this.handleEventSubmission(event);
         return result;
     }
-    
+
     async updateCalendarEvent(info: IUpdateCalendarEventInfo) {
         let kind;
         let start: string;
@@ -735,7 +735,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         };
         for (let url in relays) {
             const { read, write } = relays[url];
-            if(!read && !write) continue;
+            if (!read && !write) continue;
             const tag = [
                 "r",
                 url
@@ -844,7 +844,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             "kind": 10003,
             "created_at": Math.round(Date.now() / 1000),
             "content": "",
-            "tags": [ ...tags ]
+            "tags": [...tags]
         };
         const result = await this.handleEventSubmission(event);
         return result;
@@ -1139,17 +1139,17 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
     }
 
     async recordPaymentActivity(options: SocialEventManagerWriteOptions.IRecordPaymentActivity) {
-        const { 
-            id, 
-            sender, 
-            recipient, 
-            amount, 
-            currencyCode, 
-            networkCode, 
+        const {
+            id,
+            sender,
+            recipient,
+            amount,
+            currencyCode,
+            networkCode,
             stallId,
-            orderId, 
+            orderId,
             paymentMethod,
-            referenceId, 
+            referenceId,
             createdAt,
             replyToEventId,
             rewardsPoints
@@ -1213,6 +1213,70 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         }
         if (replyToEventId) {
             event.tags.push(['e', replyToEventId]);
+        }
+        const result = await this.handleEventSubmission(event);
+        return result;
+    }
+
+    async createStakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent) {
+        const { amount, creatorId, communityId } = options;
+        const request = btoa(JSON.stringify({ ...options }));
+        let hash = Event.getPaymentRequestHash(request);
+        let event = {
+            "kind": 9743,
+            "created_at": Math.round(Date.now() / 1000),
+            "content": request,
+            "tags": [
+                [
+                    "r",
+                    hash
+                ],
+                [
+                    "amount",
+                    amount
+                ]
+            ]
+        };
+        if (creatorId && communityId) {
+            const communityUri = SocialUtilsManager.getCommunityUri(creatorId, communityId);
+            event.tags.push(
+                [
+                    "a",
+                    communityUri
+                ]
+            );
+        }
+        const result = await this.handleEventSubmission(event);
+        return result;
+    }
+
+    async createUnstakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent) {
+        const { amount, creatorId, communityId } = options;
+        const request = btoa(JSON.stringify({ ...options }));
+        let hash = Event.getPaymentRequestHash(request);
+        let event = {
+            "kind": 9744,
+            "created_at": Math.round(Date.now() / 1000),
+            "content": request,
+            "tags": [
+                [
+                    "r",
+                    hash
+                ],
+                [
+                    "amount",
+                    amount
+                ]
+            ]
+        };
+        if (creatorId && communityId) {
+            const communityUri = SocialUtilsManager.getCommunityUri(creatorId, communityId);
+            event.tags.push(
+                [
+                    "a",
+                    communityUri
+                ]
+            );
         }
         const result = await this.handleEventSubmission(event);
         return result;
