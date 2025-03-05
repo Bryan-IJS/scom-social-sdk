@@ -2931,6 +2931,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
         fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
         fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
+        getUserStaked(pubkey: string): Promise<number>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3207,6 +3208,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         createStakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         createUnstakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         fetchTokenActivities(pubkey: string, since?: number, until?: number): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").ITokenActivity[]>;
+        getUserStakedAmount(pubkey: string): Promise<any>;
         fetchUserPrivateRelay(pubkey: string): Promise<any>;
         fetchApps(keyword?: string): Promise<any>;
         fetchApp(pubkey: string, id: string): Promise<any>;

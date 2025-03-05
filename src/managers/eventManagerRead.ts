@@ -1113,11 +1113,12 @@ class NostrEventManagerRead implements ISocialEventManagerRead {
 
     async fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent) {
         let {pubkey, since, until} = options;
+        const decodedPubKey = pubkey.startsWith('npub1') ? Nip19.decode(pubkey).data : pubkey;
         if (!since) since = 0;
         if (!until) until = 0;
         let stakingRequestEventsReq: any = {
             kinds: [9743, 9744],
-            authors: [pubkey],
+            authors: [decodedPubKey],
             limit: 20
         };
         if (until === 0) {
