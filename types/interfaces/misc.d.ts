@@ -177,6 +177,7 @@ export interface IFetchPaymentActivitiesOptions {
     until?: number;
 }
 export interface ITokenActivity {
+    id: string;
     chainId: number;
     token: any;
     amount: string;

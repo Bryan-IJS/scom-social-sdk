@@ -202,6 +202,7 @@ export interface IFetchPaymentActivitiesOptions {
 }
 
 export interface ITokenActivity {
+	id: string;
 	chainId: number;
 	token: any;
 	amount: string;

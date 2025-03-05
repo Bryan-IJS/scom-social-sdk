@@ -8207,7 +8207,7 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                     type = interfaces_4.CommunityScoreType.Like;
                 }
                 return {
-                    id: v.guid,
+                    id: event.id,
                     creatorId: index_4.Nip19.npubEncode(v.communitiesPubkey),
                     communityId: v.communitiesD,
                     npub: index_4.Nip19.npubEncode(v.pubkey),
@@ -8242,6 +8242,7 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 const request = JSON.parse(atob(requestEvent.content));
                 activities.push({
                     ...request,
+                    id: requestEvent.id,
                     action: requestEvent.kind === 9743 ? 'stake' : 'unstake',
                     status: 'completed',
                     createdAt: requestEvent.created_at
