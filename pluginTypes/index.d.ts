@@ -1738,6 +1738,7 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         until?: number;
     }
     export interface ITokenActivity {
+        id: string;
         chainId: number;
         token: any;
         amount: string;

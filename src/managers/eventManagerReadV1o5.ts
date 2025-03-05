@@ -1027,7 +1027,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
                 type = CommunityScoreType.Like;
             }
             return {
-                id: v.guid,
+                id: event.id,
                 creatorId: Nip19.npubEncode(v.communitiesPubkey),
                 communityId: v.communitiesD,
                 npub: Nip19.npubEncode(v.pubkey),
@@ -1061,6 +1061,7 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             const request = JSON.parse(atob(requestEvent.content));
             activities.push({
                 ...request,
+                id: requestEvent.id,
                 action: requestEvent.kind === 9743 ? 'stake' : 'unstake',
                 status: 'completed',
                 createdAt: requestEvent.created_at
