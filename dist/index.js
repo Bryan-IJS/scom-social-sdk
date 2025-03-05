@@ -7187,13 +7187,14 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         }
         async fetchTokenActivities(options) {
             let { pubkey, since, until } = options;
+            const decodedPubKey = pubkey.startsWith('npub1') ? index_3.Nip19.decode(pubkey).data : pubkey;
             if (!since)
                 since = 0;
             if (!until)
                 until = 0;
             let stakingRequestEventsReq = {
                 kinds: [9743, 9744],
-                authors: [pubkey],
+                authors: [decodedPubKey],
                 limit: 20
             };
             if (until === 0) {
@@ -8221,24 +8222,24 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
         }
         async fetchTokenActivities(options) {
             let { pubkey, since, until } = options;
+            const decodedPubKey = pubkey.startsWith('npub1') ? index_4.Nip19.decode(pubkey).data : pubkey;
+            let msg = {
+                pubkey: decodedPubKey,
+                limit: 20,
+            };
             if (!since)
                 since = 0;
             if (!until)
                 until = 0;
-            let stakingRequestEventsReq = {
-                kinds: [9743, 9744],
-                authors: [pubkey],
-                limit: 20
-            };
             if (until === 0) {
-                stakingRequestEventsReq.since = since;
+                msg.since = since;
             }
             else {
-                stakingRequestEventsReq.until = until;
+                msg.until = until;
             }
-            const paymentRequestEvents = await this._nostrCommunicationManager.fetchEvents(stakingRequestEventsReq);
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-staking-request', msg);
             const activities = [];
-            for (let requestEvent of paymentRequestEvents.events) {
+            for (let requestEvent of fetchEventsResponse.events) {
                 const request = JSON.parse(atob(requestEvent.content));
                 activities.push({
                     ...request,
@@ -8249,6 +8250,9 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 });
             }
             return activities;
+        }
+        async getUserStaked(pubkey) {
+            return 0; // Not supported
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -10703,6 +10707,12 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 until
             });
             return tokenActivities;
+        }
+        async getUserStaked(pubkey) {
+            const url = `${this._publicIndexingRelay}/user-staked?pubkey=${pubkey}`;
+            const response = await fetch(url);
+            const result = await response.json();
+            return result.data.staked;
         }
         async fetchUserPrivateRelay(pubkey) {
             const url = `${this._publicIndexingRelay}/private-relay?pubkey=${pubkey}`;

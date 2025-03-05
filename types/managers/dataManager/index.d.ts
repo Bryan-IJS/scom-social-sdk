@@ -202,6 +202,7 @@ declare class SocialDataManager {
     createStakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     createUnstakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     fetchTokenActivities(pubkey: string, since?: number, until?: number): Promise<import("../../interfaces").ITokenActivity[]>;
+    getUserStaked(pubkey: string): Promise<any>;
     fetchUserPrivateRelay(pubkey: string): Promise<any>;
     fetchApps(keyword?: string): Promise<any>;
     fetchApp(pubkey: string, id: string): Promise<any>;

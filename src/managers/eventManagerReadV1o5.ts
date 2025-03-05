@@ -1042,22 +1042,22 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
 
     async fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent) {
         let {pubkey, since, until} = options;
+        const decodedPubKey = pubkey.startsWith('npub1') ? Nip19.decode(pubkey).data : pubkey;
+        let msg: any = {
+            pubkey: decodedPubKey,
+            limit: 20,
+        };
         if (!since) since = 0;
         if (!until) until = 0;
-        let stakingRequestEventsReq: any = {
-            kinds: [9743, 9744],
-            authors: [pubkey],
-            limit: 20
-        };
         if (until === 0) {
-            stakingRequestEventsReq.since = since;
+            msg.since = since;
         }
         else {
-            stakingRequestEventsReq.until = until;
+            msg.until = until;
         }
-        const paymentRequestEvents = await this._nostrCommunicationManager.fetchEvents(stakingRequestEventsReq);
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-staking-request', msg);
         const activities: ITokenActivity[] = [];
-        for (let requestEvent of paymentRequestEvents.events) {
+        for (let requestEvent of fetchEventsResponse.events) {
             const request = JSON.parse(atob(requestEvent.content));
             activities.push({
                 ...request,
@@ -1068,6 +1068,10 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
             })
         }
         return activities;
+    }
+
+    async getUserStaked(pubkey: string) {
+        return 0; // Not supported
     }
 }
 
