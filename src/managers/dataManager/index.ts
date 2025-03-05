@@ -2420,7 +2420,7 @@ class SocialDataManager {
         return tokenActivities;
     }
 
-    async getUserStaked(pubkey: string) {
+    async getUserStakedAmount(pubkey: string) {
         const url = `${this._publicIndexingRelay}/user-staked?pubkey=${pubkey}`;
         const response = await fetch(url);
         const result = await response.json();

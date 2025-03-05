@@ -10708,7 +10708,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             });
             return tokenActivities;
         }
-        async getUserStaked(pubkey) {
+        async getUserStakedAmount(pubkey) {
             const url = `${this._publicIndexingRelay}/user-staked?pubkey=${pubkey}`;
             const response = await fetch(url);
             const result = await response.json();

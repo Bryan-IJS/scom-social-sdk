@@ -3208,7 +3208,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         createStakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         createUnstakeRequest(options: SocialDataManagerOptions.ICreateStakeRequest): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         fetchTokenActivities(pubkey: string, since?: number, until?: number): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").ITokenActivity[]>;
-        getUserStaked(pubkey: string): Promise<any>;
+        getUserStakedAmount(pubkey: string): Promise<any>;
         fetchUserPrivateRelay(pubkey: string): Promise<any>;
         fetchApps(keyword?: string): Promise<any>;
         fetchApp(pubkey: string, id: string): Promise<any>;
