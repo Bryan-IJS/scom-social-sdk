@@ -9,4 +9,5 @@ export declare class SystemDataManager {
     fetchRegions(): Promise<IRegion[]>;
     fetchCurrencies(): Promise<ICurrency[]>;
     fetchCryptocurrencies(): Promise<ICryptocurrency[]>;
+    getUserStakedAmount(pubkey: string): Promise<number>;
 }

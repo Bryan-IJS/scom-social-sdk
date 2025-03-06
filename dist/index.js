@@ -8462,6 +8462,15 @@ define("@scom/scom-social-sdk/managers/dataManager/system.ts", ["require", "expo
             }
             return cryptocurrencies;
         }
+        async getUserStakedAmount(pubkey) {
+            let staked = 0;
+            const url = `${this._publicIndexingRelay}/user-staked/${pubkey}`;
+            const result = await this.fetchListOfValues(url);
+            if (result.success) {
+                staked = result.data.staked;
+            }
+            return staked;
+        }
     }
     exports.SystemDataManager = SystemDataManager;
 });
@@ -10709,10 +10718,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             return tokenActivities;
         }
         async getUserStakedAmount(pubkey) {
-            const url = `${this._publicIndexingRelay}/user-staked?pubkey=${pubkey}`;
-            const response = await fetch(url);
-            const result = await response.json();
-            return result.data.staked;
+            return this.systemDataManager.getUserStakedAmount(pubkey);
         }
         async fetchUserPrivateRelay(pubkey) {
             const url = `${this._publicIndexingRelay}/private-relay?pubkey=${pubkey}`;
