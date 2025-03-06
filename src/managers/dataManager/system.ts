@@ -69,4 +69,14 @@ export class SystemDataManager {
         }
         return cryptocurrencies;
     }
+
+    async getUserStakedAmount(pubkey: string) {
+        let staked = 0;
+        const url = `${this._publicIndexingRelay}/user-staked/${pubkey}`;
+        const result = await this.fetchListOfValues(url);
+        if (result.success) {
+            staked = result.data.staked;
+        }
+        return staked;
+    }
 }
