@@ -3615,7 +3615,7 @@ define("@scom/scom-social-sdk/interfaces/channel.ts", ["require", "exports"], fu
 define("@scom/scom-social-sdk/interfaces/misc.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.CalendarEventType = exports.ScpStandardId = void 0;
+    exports.AgentTaskStatus = exports.AgentTaskScheduleType = exports.CalendarEventType = exports.ScpStandardId = void 0;
     var ScpStandardId;
     (function (ScpStandardId) {
         ScpStandardId["Community"] = "1";
@@ -3631,6 +3631,20 @@ define("@scom/scom-social-sdk/interfaces/misc.ts", ["require", "exports"], funct
         CalendarEventType["DateBased"] = "dateBased";
         CalendarEventType["TimeBased"] = "timeBased";
     })(CalendarEventType = exports.CalendarEventType || (exports.CalendarEventType = {}));
+    var AgentTaskScheduleType;
+    (function (AgentTaskScheduleType) {
+        AgentTaskScheduleType["NoRepeat"] = "NoRepeat";
+        AgentTaskScheduleType["Daily"] = "Daily";
+        AgentTaskScheduleType["Weekly"] = "Weekly";
+        AgentTaskScheduleType["Monthly"] = "Monthly";
+        AgentTaskScheduleType["Annually"] = "Annually";
+        AgentTaskScheduleType["Custom"] = "Custom";
+    })(AgentTaskScheduleType = exports.AgentTaskScheduleType || (exports.AgentTaskScheduleType = {}));
+    var AgentTaskStatus;
+    (function (AgentTaskStatus) {
+        AgentTaskStatus["Active"] = "active";
+        AgentTaskStatus["Inactive"] = "inactive";
+    })(AgentTaskStatus = exports.AgentTaskStatus || (exports.AgentTaskStatus = {}));
 });
 define("@scom/scom-social-sdk/interfaces/marketplace.ts", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -6042,6 +6056,7 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
                 message['stall_id'] = stallId;
             }
             if (rewardsPoints) {
+                rewardsPoints.creatorId = rewardsPoints.creatorId.startsWith('npub1') ? index_2.Nip19.decode(rewardsPoints.creatorId).data : rewardsPoints.creatorId;
                 message['rewards_points'] = rewardsPoints;
             }
             const encryptedMessage = await utilsManager_2.SocialUtilsManager.encryptMessage(this._privateKey, decodedRecipientPubkey, JSON.stringify(message));
@@ -6134,6 +6149,31 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
                     communityUri
                 ]);
             }
+            const result = await this.handleEventSubmission(event);
+            return result;
+        }
+        async updateAgent(options) {
+            const content = JSON.stringify({
+                id: options.id,
+                name: options.name,
+                description: options.description,
+                avatar: options.avatar,
+                enclave: options.enclave,
+                skills: options.skills
+            });
+            let event = {
+                "kind": 31990,
+                "created_at": Math.round(Date.now() / 1000),
+                "content": content,
+                "tags": [
+                    [
+                        "d",
+                        options.id
+                    ],
+                    ["k", "5000"],
+                    ["t", "agent"]
+                ]
+            };
             const result = await this.handleEventSubmission(event);
             return result;
         }
@@ -7216,6 +7256,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
             }
             return activities;
         }
+        async fetchUserAgents(options) {
+            return []; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8253,6 +8296,15 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
         }
         async getUserStaked(pubkey) {
             return 0; // Not supported
+        }
+        async fetchUserAgents(options) {
+            const { pubkey, name } = options;
+            let msg = {
+                pubkey,
+                name
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-agents', msg);
+            return fetchEventsResponse.events || [];
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -11145,8 +11197,9 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
         }
         async redeemCommunityScore(options) {
             const authHeader = utilsManager_6.SocialUtilsManager.constructAuthHeader(this._privateKey);
+            const communityPubkey = options.creatorId.startsWith('npub1') ? index_6.Nip19.decode(options.creatorId).data : options.creatorId;
             let bodyData = {
-                communityPubkey: options.creatorId,
+                communityPubkey,
                 communityD: options.communityId,
                 score: options.points,
                 eventId: options.eventId
@@ -11450,6 +11503,14 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 communityId
             });
             return data;
+        }
+        async updateAgent(info) {
+            const result = await this._socialEventManagerWrite.updateAgent(info);
+            return result;
+        }
+        async fetchUserAgents(pubkey) {
+            const agents = await this._socialEventManagerRead.fetchUserAgents({ pubkey });
+            return agents;
         }
         async fetchRegions() {
             return this.systemDataManager.fetchRegions();

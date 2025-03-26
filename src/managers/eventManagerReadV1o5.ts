@@ -1073,6 +1073,16 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     async getUserStaked(pubkey: string) {
         return 0; // Not supported
     }
+
+    async fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents) {
+        const { pubkey, name } = options;
+        let msg = {
+            pubkey,
+            name
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-agents', msg);
+        return fetchEventsResponse.events || [];
+    }
 }
 
 export {

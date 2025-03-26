@@ -246,6 +246,10 @@ export namespace SocialEventManagerReadOptions {
 		since?: number;
 		until?: number;
 	}
+	export interface IFetchUserAgents {
+		pubkey: string;
+		name?: string;
+	}
 }
 
 export interface ISocialEventManagerReadResult {
@@ -320,6 +324,7 @@ export interface ISocialEventManagerRead {
 	fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
 	fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
 	fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
+	fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
 	// fetchMetadata(options: IFetchMetadataOptions): Promise<INostrEvent[]>;
     // fetchReplies(options: IFetchRepliesOptions): Promise<INostrEvent[]>;
     // fetchFollowing(npubs: string[]): Promise<INostrEvent[]>;

@@ -1140,6 +1140,10 @@ class NostrEventManagerRead implements ISocialEventManagerRead {
         }
         return activities;
     }
+
+    async fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents) {
+        return []; // Not supported
+    }
 }
 
 export {

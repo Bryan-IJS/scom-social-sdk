@@ -1749,6 +1749,53 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         status: string;
         createdAt: number;
     }
+    export interface IAgentCapability {
+        webSearch: boolean;
+        imageGeneration: boolean;
+        codeInterpreter: boolean;
+    }
+    export interface IAgentSkillInfo {
+        id: string;
+        name: string;
+        category?: string;
+        knowledge?: string[];
+        capabilities?: IAgentCapability;
+        authentication?: string;
+        schema?: string;
+    }
+    export enum AgentTaskScheduleType {
+        NoRepeat = "NoRepeat",
+        Daily = "Daily",
+        Weekly = "Weekly",
+        Monthly = "Monthly",
+        Annually = "Annually",
+        Custom = "Custom"
+    }
+    export interface IAgentTaskSchedule {
+        type?: AgentTaskScheduleType;
+        dayOfWeek?: number;
+        time?: number;
+        custom?: string;
+    }
+    export enum AgentTaskStatus {
+        Active = "active",
+        Inactive = "inactive"
+    }
+    export interface IAgentTaskInfo {
+        name: string;
+        instructions: string;
+        schedule?: IAgentTaskSchedule;
+        status: AgentTaskStatus;
+    }
+    export interface IAgentInfo {
+        id: string;
+        name: string;
+        description?: string;
+        avatar?: string;
+        enclave: string;
+        skills?: IAgentSkillInfo[];
+        tasks?: IAgentTaskInfo[];
+    }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/marketplace.ts" />
 declare module "@scom/scom-social-sdk/interfaces/marketplace.ts" {
@@ -2214,6 +2261,10 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
             since?: number;
             until?: number;
         }
+        interface IFetchUserAgents {
+            pubkey: string;
+            name?: string;
+        }
     }
     export interface ISocialEventManagerReadResult {
         error?: string;
@@ -2284,6 +2335,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
         fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
         fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
+        fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/dataManager.ts" />
@@ -2374,7 +2426,7 @@ declare module "@scom/scom-social-sdk/interfaces/dataManager.ts" {
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/eventManagerWrite.ts" />
 declare module "@scom/scom-social-sdk/interfaces/eventManagerWrite.ts" {
-    import { IUpdateCalendarEventInfo, INewCalendarEventPostInfo, ILongFormContentInfo, IRelayConfig, IPaymentActivityV2 } from "@scom/scom-social-sdk/interfaces/misc.ts";
+    import { IUpdateCalendarEventInfo, INewCalendarEventPostInfo, ILongFormContentInfo, IRelayConfig, IPaymentActivityV2, IAgentInfo } from "@scom/scom-social-sdk/interfaces/misc.ts";
     import { IMarketplaceOrder, IMarketplaceOrderPaymentRequest, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
     import { ICommunityBasicInfo, ICommunityInfo, INewCommunityPostInfo } from "@scom/scom-social-sdk/interfaces/community.ts";
     import { IChannelInfo, INewChannelMessageInfo } from "@scom/scom-social-sdk/interfaces/channel.ts";
@@ -2426,6 +2478,8 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerWrite.ts" {
             communityId?: string;
             message?: string;
         }
+        interface IUpdateAgent extends IAgentInfo {
+        }
     }
     export interface ISocialEventManagerWriteResult {
         relayResponse: INostrSubmitResponse;
@@ -2469,6 +2523,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerWrite.ts" {
         recordPaymentActivity(options: SocialEventManagerWriteOptions.IRecordPaymentActivity): Promise<ISocialEventManagerWriteResult>;
         createStakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
         createUnstakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
+        updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent): Promise<ISocialEventManagerWriteResult>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/index.ts" />
@@ -2764,6 +2819,10 @@ declare module "@scom/scom-social-sdk/managers/eventManagerWrite.ts" {
             event: Event.VerifiedEvent<number>;
             relayResponse: import("@scom/scom-social-sdk/interfaces/common.ts").INostrSubmitResponse;
         }>;
+        updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent): Promise<{
+            event: Event.VerifiedEvent<number>;
+            relayResponse: import("@scom/scom-social-sdk/interfaces/common.ts").INostrSubmitResponse;
+        }>;
     }
     export { NostrEventManagerWrite };
 }
@@ -2848,6 +2907,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerRead.ts" {
         fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<any>;
         fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<any>;
         fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
+        fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<any[]>;
     }
     export { NostrEventManagerRead };
 }
@@ -2932,6 +2992,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
         fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
         getUserStaked(pubkey: string): Promise<number>;
+        fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3005,7 +3066,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/system.ts" {
 }
 /// <amd-module name="@scom/scom-social-sdk/managers/dataManager/index.ts" />
 declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
-    import { BuyerOrderStatus, CommunityRole, ICalendarEventDetailInfo, ICalendarEventInfo, IChannelInfo, ICheckIfUserHasAccessToCommunityOptions, ICheckRelayStatusResult, ICommunity, ICommunityDetailMetadata, ICommunityInfo, ICommunityLeaderboard, ICommunityMember, ICommunityPostScpData, ICommunityProductInfo, ICommunityStallInfo, ICommunitySubscription, IConversationPath, ICurrency, IDecryptPostPrivateKeyForCommunityOptions, IEthWalletAccountsInfo, IFetchPaymentActivitiesOptions, ILocationCoordinates, ILongFormContentInfo, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall, IMessageContactInfo, INewCommunityInfo, INostrEvent, INostrMetadata, INostrMetadataContent, INoteActions, INoteCommunityInfo, INoteInfo, INoteInfoExtended, IPaymentActivityV2, IPostStats, IRegion, IRetrieveChannelMessageKeysOptions, IRetrieveCommunityPostKeysByNoteEventsOptions, IRetrieveCommunityPostKeysOptions, IRetrieveCommunityThreadPostKeysOptions, IRetrievedBuyerOrder, IRetrievedMarketplaceOrder, ISendTempMessageOptions, ISocialDataManagerConfig, ISocialEventManagerRead, ISocialEventManagerWrite, ITrendingCommunityInfo, IUpdateCalendarEventInfo, IUpdateCommunitySubscription, IUserActivityStats, IUserProfile, SellerOrderStatus, SocialDataManagerOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
+    import { BuyerOrderStatus, CommunityRole, IAgentInfo, ICalendarEventDetailInfo, ICalendarEventInfo, IChannelInfo, ICheckIfUserHasAccessToCommunityOptions, ICheckRelayStatusResult, ICommunity, ICommunityDetailMetadata, ICommunityInfo, ICommunityLeaderboard, ICommunityMember, ICommunityPostScpData, ICommunityProductInfo, ICommunityStallInfo, ICommunitySubscription, IConversationPath, ICurrency, IDecryptPostPrivateKeyForCommunityOptions, IEthWalletAccountsInfo, IFetchPaymentActivitiesOptions, ILocationCoordinates, ILongFormContentInfo, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall, IMessageContactInfo, INewCommunityInfo, INostrEvent, INostrMetadata, INostrMetadataContent, INoteActions, INoteCommunityInfo, INoteInfo, INoteInfoExtended, IPaymentActivityV2, IPostStats, IRegion, IRetrieveChannelMessageKeysOptions, IRetrieveCommunityPostKeysByNoteEventsOptions, IRetrieveCommunityPostKeysOptions, IRetrieveCommunityThreadPostKeysOptions, IRetrievedBuyerOrder, IRetrievedMarketplaceOrder, ISendTempMessageOptions, ISocialDataManagerConfig, ISocialEventManagerRead, ISocialEventManagerWrite, ITrendingCommunityInfo, IUpdateCalendarEventInfo, IUpdateCommunitySubscription, IUserActivityStats, IUserProfile, SellerOrderStatus, SocialDataManagerOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
     class SocialDataManager {
         private _writeRelays;
         private _publicIndexingRelay;
@@ -3254,6 +3315,8 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         fetchReservationsByRole(options: SocialDataManagerOptions.IFetchReservationsByRole): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").IReservation[]>;
         fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScore[]>;
         fetchUserCommunityScoreLogs(pubKey: string, creatorId: string, communityId: string): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScoreLog[]>;
+        updateAgent(info: IAgentInfo): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
+        fetchUserAgents(pubkey: string): Promise<INostrEvent[]>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;

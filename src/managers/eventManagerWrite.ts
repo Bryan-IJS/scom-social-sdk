@@ -1180,6 +1180,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             message['stall_id'] = stallId;
         }
         if (rewardsPoints) {
+            rewardsPoints.creatorId = rewardsPoints.creatorId.startsWith('npub1') ? Nip19.decode(rewardsPoints.creatorId).data as string : rewardsPoints.creatorId;
             message['rewards_points'] = rewardsPoints;
         }
         const encryptedMessage = await SocialUtilsManager.encryptMessage(this._privateKey, decodedRecipientPubkey, JSON.stringify(message));
@@ -1278,6 +1279,32 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
                 ]
             );
         }
+        const result = await this.handleEventSubmission(event);
+        return result;
+    }
+
+    async updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent) {
+        const content = JSON.stringify({
+            id: options.id,
+            name: options.name,
+            description: options.description,
+            avatar: options.avatar,
+            enclave: options.enclave,
+            skills: options.skills
+        });
+        let event = {
+            "kind": 31990,
+            "created_at": Math.round(Date.now() / 1000),
+            "content": content,
+            "tags": [
+                [
+                    "d",
+                    options.id
+                ],
+                ["k", "5000"],
+                ["t", "agent"]
+            ]
+        };
         const result = await this.handleEventSubmission(event);
         return result;
     }

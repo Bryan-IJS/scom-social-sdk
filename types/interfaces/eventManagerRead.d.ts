@@ -244,6 +244,10 @@ export declare namespace SocialEventManagerReadOptions {
         since?: number;
         until?: number;
     }
+    interface IFetchUserAgents {
+        pubkey: string;
+        name?: string;
+    }
 }
 export interface ISocialEventManagerReadResult {
     error?: string;
@@ -314,4 +318,5 @@ export interface ISocialEventManagerRead {
     fetchUserCommunityScores(options: SocialEventManagerReadOptions.IFetchUserCommunityScores): Promise<IUserCommunityScore[]>;
     fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
     fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
+    fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
 }

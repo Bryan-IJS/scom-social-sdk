@@ -188,3 +188,50 @@ export interface ITokenActivity {
     status: string;
     createdAt: number;
 }
+export interface IAgentCapability {
+    webSearch: boolean;
+    imageGeneration: boolean;
+    codeInterpreter: boolean;
+}
+export interface IAgentSkillInfo {
+    id: string;
+    name: string;
+    category?: string;
+    knowledge?: string[];
+    capabilities?: IAgentCapability;
+    authentication?: string;
+    schema?: string;
+}
+export declare enum AgentTaskScheduleType {
+    NoRepeat = "NoRepeat",
+    Daily = "Daily",
+    Weekly = "Weekly",
+    Monthly = "Monthly",
+    Annually = "Annually",
+    Custom = "Custom"
+}
+export interface IAgentTaskSchedule {
+    type?: AgentTaskScheduleType;
+    dayOfWeek?: number;
+    time?: number;
+    custom?: string;
+}
+export declare enum AgentTaskStatus {
+    Active = "active",
+    Inactive = "inactive"
+}
+export interface IAgentTaskInfo {
+    name: string;
+    instructions: string;
+    schedule?: IAgentTaskSchedule;
+    status: AgentTaskStatus;
+}
+export interface IAgentInfo {
+    id: string;
+    name: string;
+    description?: string;
+    avatar?: string;
+    enclave: string;
+    skills?: IAgentSkillInfo[];
+    tasks?: IAgentTaskInfo[];
+}

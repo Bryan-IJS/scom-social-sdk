@@ -150,5 +150,9 @@ declare class NostrEventManagerWrite implements ISocialEventManagerWrite {
         event: Event.VerifiedEvent<number>;
         relayResponse: import("../interfaces").INostrSubmitResponse;
     }>;
+    updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent): Promise<{
+        event: Event.VerifiedEvent<number>;
+        relayResponse: import("../interfaces").INostrSubmitResponse;
+    }>;
 }
 export { NostrEventManagerWrite };

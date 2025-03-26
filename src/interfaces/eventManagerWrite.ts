@@ -1,4 +1,4 @@
-import { IUpdateCalendarEventInfo, INewCalendarEventPostInfo, ILongFormContentInfo, IRelayConfig, IPaymentActivityV2 } from "./misc";
+import { IUpdateCalendarEventInfo, INewCalendarEventPostInfo, ILongFormContentInfo, IRelayConfig, IPaymentActivityV2, IAgentInfo } from "./misc";
 import { IMarketplaceOrder, IMarketplaceOrderPaymentRequest, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall } from "./marketplace";
 import { ICommunityBasicInfo, ICommunityInfo, INewCommunityPostInfo } from "./community";
 import { IChannelInfo, INewChannelMessageInfo } from "./channel";
@@ -58,6 +58,9 @@ export namespace SocialEventManagerWriteOptions {
         communityId?: string;
         message?: string;
     }
+
+    export interface IUpdateAgent extends IAgentInfo {      
+    }
 }
 
 export interface ISocialEventManagerWriteResult {
@@ -103,4 +106,5 @@ export interface ISocialEventManagerWrite {
     recordPaymentActivity(options: SocialEventManagerWriteOptions.IRecordPaymentActivity): Promise<ISocialEventManagerWriteResult>;
     createStakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
     createUnstakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
+    updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent): Promise<ISocialEventManagerWriteResult>;
 }

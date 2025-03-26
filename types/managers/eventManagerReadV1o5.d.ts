@@ -77,5 +77,6 @@ declare class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
     fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
     getUserStaked(pubkey: string): Promise<number>;
+    fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
 }
 export { NostrEventManagerReadV1o5 };
