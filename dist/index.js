@@ -3625,6 +3625,7 @@ define("@scom/scom-social-sdk/interfaces/misc.ts", ["require", "exports"], funct
         ScpStandardId["GroupKeys"] = "5";
         ScpStandardId["CommerceStall"] = "6";
         ScpStandardId["CommerceOrder"] = "7";
+        ScpStandardId["Agent"] = "8";
     })(ScpStandardId = exports.ScpStandardId || (exports.ScpStandardId = {}));
     var CalendarEventType;
     (function (CalendarEventType) {
@@ -4662,6 +4663,39 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                 console.warn("Failed to decrypt payment activity", e);
             }
             return paymentActivity;
+        }
+        static async extractAgentInfo(privateKey, event) {
+            const name = event.tags.find(tag => tag[0] === 'd')?.[1];
+            let scpData = this.extractScpData(event, interfaces_1.ScpStandardId.Agent);
+            let data = {};
+            if (event.content) {
+                try {
+                    let contentStr;
+                    const selfPubKey = index_1.Keys.getPublicKey(privateKey);
+                    if (selfPubKey === event.pubkey) {
+                        contentStr = await SocialUtilsManager.decryptMessage(privateKey, scpData.agentPublicKey, event.content);
+                    }
+                    else if (selfPubKey === scpData.enclavePublicKey) {
+                        const agentPrivateKey = await SocialUtilsManager.decryptMessage(privateKey, event.pubkey, scpData.encryptedKey);
+                        contentStr = await SocialUtilsManager.decryptMessage(agentPrivateKey, event.pubkey, event.content);
+                    }
+                    if (!contentStr?.length)
+                        return null;
+                    data = JSON.parse(contentStr);
+                }
+                catch {
+                    data = {};
+                }
+            }
+            let agentInfo = {
+                name,
+                description: data.description,
+                avatar: data.avatar,
+                enclave: data.enclave,
+                skills: data.skills,
+                scpData
+            };
+            return agentInfo;
         }
         //FIXME: remove this when compiler is fixed
         static flatMap(array, callback) {
@@ -6154,26 +6188,34 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
         }
         async updateAgent(options) {
             const content = JSON.stringify({
-                id: options.id,
                 name: options.name,
                 description: options.description,
                 avatar: options.avatar,
                 enclave: options.enclave,
                 skills: options.skills
             });
+            const encryptedContent = await utilsManager_2.SocialUtilsManager.encryptMessage(this._privateKey, options.scpData.agentPublicKey, content);
             let event = {
-                "kind": 31990,
+                "kind": 31991,
                 "created_at": Math.round(Date.now() / 1000),
-                "content": content,
+                "content": encryptedContent,
                 "tags": [
                     [
                         "d",
-                        options.id
+                        options.name
                     ],
-                    ["k", "5000"],
-                    ["t", "agent"]
+                    ["t", "agent"],
+                    ["encrypted"]
                 ]
             };
+            if (options.scpData) {
+                let encodedScpData = utilsManager_2.SocialUtilsManager.utf8ToBase64('$scp:' + JSON.stringify(options.scpData));
+                event.tags.push([
+                    "scp",
+                    interfaces_2.ScpStandardId.Agent,
+                    encodedScpData
+                ]);
+            }
             const result = await this.handleEventSubmission(event);
             return result;
         }
@@ -11505,11 +11547,25 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             return data;
         }
         async updateAgent(info) {
+            const enclavePublicKey = index_6.Nip19.decode(info.enclave.npub).data;
+            const agentPrivateKey = index_6.Keys.generatePrivateKey();
+            const agentPublicKey = index_6.Keys.getPublicKey(agentPrivateKey);
+            const encryptedKey = await utilsManager_6.SocialUtilsManager.encryptMessage(this._privateKey, enclavePublicKey, agentPrivateKey);
+            info.scpData = {
+                agentPublicKey,
+                enclavePublicKey,
+                encryptedKey: encryptedKey
+            };
             const result = await this._socialEventManagerWrite.updateAgent(info);
             return result;
         }
         async fetchUserAgents(pubkey) {
-            const agents = await this._socialEventManagerRead.fetchUserAgents({ pubkey });
+            const agentEvents = await this._socialEventManagerRead.fetchUserAgents({ pubkey });
+            let agents = [];
+            for (let event of agentEvents) {
+                const agentInfo = await utilsManager_6.SocialUtilsManager.extractAgentInfo(this._privateKey, event);
+                agents.push(agentInfo);
+            }
             return agents;
         }
         async fetchRegions() {

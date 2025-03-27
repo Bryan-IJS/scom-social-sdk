@@ -1608,7 +1608,8 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         ChannelMessage = "4",
         GroupKeys = "5",
         CommerceStall = "6",
-        CommerceOrder = "7"
+        CommerceOrder = "7",
+        Agent = "8"
     }
     export interface IMessageContactInfo {
         id: string;
@@ -1749,6 +1750,14 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         status: string;
         createdAt: number;
     }
+    export interface IAgentScpData {
+        agentPublicKey?: string;
+        encryptedKey?: string;
+        enclavePublicKey?: string;
+    }
+    export interface IEnclaveInfo {
+        npub: string;
+    }
     export interface IAgentCapability {
         webSearch: boolean;
         imageGeneration: boolean;
@@ -1784,17 +1793,19 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
     export interface IAgentTaskInfo {
         name: string;
         instructions: string;
+        trigger: 'event' | 'schedule';
+        eventId?: string;
         schedule?: IAgentTaskSchedule;
         status: AgentTaskStatus;
     }
     export interface IAgentInfo {
-        id: string;
         name: string;
         description?: string;
         avatar?: string;
-        enclave: string;
+        enclave: IEnclaveInfo;
         skills?: IAgentSkillInfo[];
         tasks?: IAgentTaskInfo[];
+        scpData?: IAgentScpData;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/marketplace.ts" />
@@ -2582,7 +2593,7 @@ declare module "@scom/scom-social-sdk/utils/geohash.ts" {
 }
 /// <amd-module name="@scom/scom-social-sdk/managers/utilsManager.ts" />
 declare module "@scom/scom-social-sdk/managers/utilsManager.ts" {
-    import { ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile } from "@scom/scom-social-sdk/interfaces/index.ts";
+    import { IAgentInfo, ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile } from "@scom/scom-social-sdk/interfaces/index.ts";
     class SocialUtilsManager {
         static hexStringToUint8Array(hexString: string): Uint8Array;
         static base64ToUtf8(base64: string): string;
@@ -2619,6 +2630,7 @@ declare module "@scom/scom-social-sdk/managers/utilsManager.ts" {
         static extractCalendarEventInfo(event: INostrEvent): ICalendarEventInfo;
         static extractMarketplaceOrder(privateKey: string, event: INostrEvent, stallInfo: ICommunityStallInfo): Promise<IRetrievedMarketplaceOrder>;
         static extractPaymentActivity(privateKey: string, event: INostrEvent): Promise<IPaymentActivityV2>;
+        static extractAgentInfo(privateKey: string, event: INostrEvent): Promise<IAgentInfo>;
         static flatMap<T, U>(array: T[], callback: (item: T) => U[]): U[];
         static getPollResult(readRelay: string, requestId: string, authHeader?: string): Promise<any>;
     }
@@ -3316,7 +3328,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScore[]>;
         fetchUserCommunityScoreLogs(pubKey: string, creatorId: string, communityId: string): Promise<import("@scom/scom-social-sdk/interfaces/community.ts").IUserCommunityScoreLog[]>;
         updateAgent(info: IAgentInfo): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
-        fetchUserAgents(pubkey: string): Promise<INostrEvent[]>;
+        fetchUserAgents(pubkey: string): Promise<IAgentInfo[]>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;

@@ -1,6 +1,6 @@
 import { Utils } from "@ijstech/eth-wallet";
 import { Nip19, Event, Keys } from "../core/index";
-import { CalendarEventType, ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityPostStatusOption, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceOrder, IMarketplaceOrderItem, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile, MarketplaceProductType, MembershipType, PaymentMethod, ProtectedMembershipPolicyType, ScpStandardId } from "../interfaces";
+import { CalendarEventType, IAgentInfo, ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityPostStatusOption, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceOrder, IMarketplaceOrderItem, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile, MarketplaceProductType, MembershipType, PaymentMethod, ProtectedMembershipPolicyType, ScpStandardId } from "../interfaces";
 import { Signer } from "@scom/scom-signer";
 import Geohash from '../utils/geohash';
 
@@ -605,6 +605,39 @@ class SocialUtilsManager {
             console.warn("Failed to decrypt payment activity", e);
         }
         return paymentActivity;
+    }
+
+    static async extractAgentInfo(privateKey: string, event: INostrEvent) {
+        const name = event.tags.find(tag => tag[0] === 'd')?.[1];
+        let scpData = this.extractScpData(event, ScpStandardId.Agent);
+        let data: any = {};
+        if (event.content) {
+            try {
+                let contentStr;
+                const selfPubKey = Keys.getPublicKey(privateKey);
+                if (selfPubKey === event.pubkey) {
+                    contentStr = await SocialUtilsManager.decryptMessage(privateKey, scpData.agentPublicKey, event.content);
+                }
+                else if (selfPubKey === scpData.enclavePublicKey) {
+                    const agentPrivateKey = await SocialUtilsManager.decryptMessage(privateKey, event.pubkey, scpData.encryptedKey); 
+                    contentStr = await SocialUtilsManager.decryptMessage(agentPrivateKey, event.pubkey, event.content);            
+                }
+                if (!contentStr?.length) return null;
+                data = JSON.parse(contentStr)
+            } catch {
+                data = {};
+            }
+        }
+        let agentInfo: IAgentInfo = {
+            name,
+            description: data.description,
+            avatar: data.avatar,
+            enclave: data.enclave,
+            skills: data.skills,
+            scpData
+        }
+
+        return agentInfo;
     }
 
     //FIXME: remove this when compiler is fixed

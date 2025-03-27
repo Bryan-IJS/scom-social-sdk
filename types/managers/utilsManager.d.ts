@@ -1,4 +1,4 @@
-import { ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile } from "../interfaces";
+import { IAgentInfo, ICalendarEventInfo, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityProductInfo, ICommunityStallInfo, IMarketplaceStallBasicInfo, INostrEvent, INostrMetadata, IPaymentActivityV2, IRetrievedMarketplaceOrder, IUserProfile } from "../interfaces";
 declare class SocialUtilsManager {
     static hexStringToUint8Array(hexString: string): Uint8Array;
     static base64ToUtf8(base64: string): string;
@@ -30,6 +30,7 @@ declare class SocialUtilsManager {
     static extractCalendarEventInfo(event: INostrEvent): ICalendarEventInfo;
     static extractMarketplaceOrder(privateKey: string, event: INostrEvent, stallInfo: ICommunityStallInfo): Promise<IRetrievedMarketplaceOrder>;
     static extractPaymentActivity(privateKey: string, event: INostrEvent): Promise<IPaymentActivityV2>;
+    static extractAgentInfo(privateKey: string, event: INostrEvent): Promise<IAgentInfo>;
     static flatMap<T, U>(array: T[], callback: (item: T) => U[]): U[];
     static getPollResult(readRelay: string, requestId: string, authHeader?: string): Promise<any>;
 }

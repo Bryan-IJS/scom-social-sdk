@@ -1285,26 +1285,34 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
 
     async updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent) {
         const content = JSON.stringify({
-            id: options.id,
             name: options.name,
             description: options.description,
             avatar: options.avatar,
             enclave: options.enclave,
             skills: options.skills
         });
+        const encryptedContent = await SocialUtilsManager.encryptMessage(this._privateKey, options.scpData.agentPublicKey, content);
         let event = {
-            "kind": 31990,
+            "kind": 31991,
             "created_at": Math.round(Date.now() / 1000),
-            "content": content,
+            "content": encryptedContent,
             "tags": [
                 [
                     "d",
-                    options.id
+                    options.name
                 ],
-                ["k", "5000"],
-                ["t", "agent"]
+                ["t", "agent"],
+                ["encrypted"]
             ]
         };
+        if (options.scpData) {
+            let encodedScpData = SocialUtilsManager.utf8ToBase64('$scp:' + JSON.stringify(options.scpData));
+            event.tags.push([
+                "scp",
+                ScpStandardId.Agent,
+                encodedScpData
+            ]);
+        }
         const result = await this.handleEventSubmission(event);
         return result;
     }

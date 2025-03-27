@@ -53,6 +53,7 @@ export enum ScpStandardId {
 	GroupKeys = '5',
 	CommerceStall = '6',
 	CommerceOrder = '7',
+	Agent = '8',
 }
 
 export interface IMessageContactInfo {
@@ -214,6 +215,17 @@ export interface ITokenActivity {
 	createdAt: number;
 }
 
+//SCP-8
+export interface IAgentScpData {
+	agentPublicKey?: string;
+	encryptedKey?: string;
+	enclavePublicKey?: string;
+}
+
+export interface IEnclaveInfo {
+	npub: string;
+}
+
 export interface IAgentCapability {
 	webSearch: boolean;
 	imageGeneration: boolean;
@@ -254,16 +266,18 @@ export enum AgentTaskStatus {
 export interface IAgentTaskInfo {
 	name: string;
 	instructions: string;
+	trigger: 'event' | 'schedule';
+	eventId?: string;
 	schedule?: IAgentTaskSchedule;
 	status: AgentTaskStatus;
 }
 
 export interface IAgentInfo {
-	id: string;
 	name: string;
 	description?: string;
 	avatar?: string;
-	enclave: string;
+	enclave: IEnclaveInfo;
 	skills?: IAgentSkillInfo[];
 	tasks?: IAgentTaskInfo[];
+	scpData?: IAgentScpData;
 }

@@ -248,7 +248,7 @@ declare class SocialDataManager {
     fetchUserCommunityScores(options: SocialDataManagerOptions.IFetchUserCommunityScores): Promise<import("../../interfaces").IUserCommunityScore[]>;
     fetchUserCommunityScoreLogs(pubKey: string, creatorId: string, communityId: string): Promise<import("../../interfaces").IUserCommunityScoreLog[]>;
     updateAgent(info: IAgentInfo): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
-    fetchUserAgents(pubkey: string): Promise<INostrEvent[]>;
+    fetchUserAgents(pubkey: string): Promise<IAgentInfo[]>;
     fetchRegions(): Promise<IRegion[]>;
     fetchCurrencies(): Promise<ICurrency[]>;
     fetchCryptocurrencies(): Promise<import("../../interfaces").ICryptocurrency[]>;

@@ -3198,12 +3198,26 @@ class SocialDataManager {
     }
 
     async updateAgent(info: IAgentInfo) {
+        const enclavePublicKey = Nip19.decode(info.enclave.npub).data as string;
+        const agentPrivateKey = Keys.generatePrivateKey();
+        const agentPublicKey = Keys.getPublicKey(agentPrivateKey);
+        const encryptedKey = await SocialUtilsManager.encryptMessage(this._privateKey, enclavePublicKey, agentPrivateKey);
+        info.scpData = {
+            agentPublicKey,
+            enclavePublicKey,
+            encryptedKey: encryptedKey
+        }
         const result = await this._socialEventManagerWrite.updateAgent(info);
         return result;
     }
 
     async fetchUserAgents(pubkey: string) {
-        const agents = await this._socialEventManagerRead.fetchUserAgents({ pubkey });
+        const agentEvents = await this._socialEventManagerRead.fetchUserAgents({ pubkey });
+        let agents: IAgentInfo[] = [];
+        for (let event of agentEvents) {
+            const agentInfo = await SocialUtilsManager.extractAgentInfo(this._privateKey, event);
+            agents.push(agentInfo);
+        }
         return agents;
     }
     
