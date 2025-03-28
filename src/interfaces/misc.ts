@@ -264,6 +264,7 @@ export enum AgentTaskStatus {
 }
 
 export interface IAgentTaskInfo {
+	id: string;
 	name: string;
 	instructions: string;
 	trigger: 'event' | 'schedule';

@@ -1791,6 +1791,7 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         Inactive = "inactive"
     }
     export interface IAgentTaskInfo {
+        id: string;
         name: string;
         instructions: string;
         trigger: 'event' | 'schedule';
