@@ -282,3 +282,26 @@ export interface IAgentInfo {
 	tasks?: IAgentTaskInfo[];
 	scpData?: IAgentScpData;
 }
+
+export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";
+
+export interface IIdentityClaim {
+	platform: IdentityPlatform;
+	identity: string;
+	proof: string;
+}
+
+export interface IIdentityVerification {
+	claimEventId: string;
+	claimantPubKey: string;
+	platform: IdentityPlatform;
+	identity: string;
+	result: boolean;
+	eas: string;
+}
+
+export interface IIdentityClaimResult extends IIdentityClaim {
+	claimEventId: string;
+	result: boolean;
+	eas: string;
+}

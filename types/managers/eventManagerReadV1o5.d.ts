@@ -1,4 +1,4 @@
-import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, INostrEvent, IPaymentActivity, ISocialEventManagerRead, ITokenActivity, IUserCommunityScore, IUserCommunityScoreLog, SocialEventManagerReadOptions } from "../interfaces";
+import { IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IIdentityClaimResult, INostrEvent, IPaymentActivity, ISocialEventManagerRead, ITokenActivity, IUserCommunityScore, IUserCommunityScoreLog, SocialEventManagerReadOptions } from "../interfaces";
 import { INostrRestAPIManager } from "./communication";
 declare class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     protected _nostrCommunicationManager: INostrRestAPIManager;
@@ -78,5 +78,6 @@ declare class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
     getUserStaked(pubkey: string): Promise<number>;
     fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
+    fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
 }
 export { NostrEventManagerReadV1o5 };

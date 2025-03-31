@@ -1316,6 +1316,39 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         const result = await this.handleEventSubmission(event);
         return result;
     }
+
+    async makeIdentityClaim(options: SocialEventManagerWriteOptions.IMakeIdentityClaim) {
+        let event = {
+            "kind": 1005,
+            "created_at": Math.round(Date.now() / 1000),
+            "content": '',
+            "tags": [
+                ["platform", options.platform],
+                ["identity", options.identity],
+                ["proof", options.proof]
+            ]
+        };
+        const result = await this.handleEventSubmission(event);
+        return result;
+    }
+
+    async submitIdentityVerification(options: SocialEventManagerWriteOptions.ISubmitIdentityVerification) {
+        let event = {
+            "kind": 1006,
+            "created_at": Math.round(Date.now() / 1000),
+            "content": '',
+            "tags": [
+                ["e", options.claimEventId],
+                ["p", options.claimantPubKey],
+                ["platform", options.platform],
+                ["identity", options.identity],
+                ["result", options.result.toString()],
+                ["eas", options.eas]
+            ]
+        };
+        const result = await this.handleEventSubmission(event);
+        return result;
+    }
 }
 
 export {

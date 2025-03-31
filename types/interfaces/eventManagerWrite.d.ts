@@ -1,4 +1,4 @@
-import { IUpdateCalendarEventInfo, INewCalendarEventPostInfo, ILongFormContentInfo, IRelayConfig, IPaymentActivityV2, IAgentInfo } from "./misc";
+import { IUpdateCalendarEventInfo, INewCalendarEventPostInfo, ILongFormContentInfo, IRelayConfig, IPaymentActivityV2, IAgentInfo, IIdentityClaim, IIdentityVerification } from "./misc";
 import { IMarketplaceOrder, IMarketplaceOrderPaymentRequest, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall } from "./marketplace";
 import { ICommunityBasicInfo, ICommunityInfo, INewCommunityPostInfo } from "./community";
 import { IChannelInfo, INewChannelMessageInfo } from "./channel";
@@ -52,6 +52,10 @@ export declare namespace SocialEventManagerWriteOptions {
     }
     interface IUpdateAgent extends IAgentInfo {
     }
+    interface IMakeIdentityClaim extends IIdentityClaim {
+    }
+    interface ISubmitIdentityVerification extends IIdentityVerification {
+    }
 }
 export interface ISocialEventManagerWriteResult {
     relayResponse: INostrSubmitResponse;
@@ -96,4 +100,6 @@ export interface ISocialEventManagerWrite {
     createStakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
     createUnstakeRequestEvent(options: SocialEventManagerWriteOptions.ICreateStakeRequestEvent): Promise<ISocialEventManagerWriteResult>;
     updateAgent(options: SocialEventManagerWriteOptions.IUpdateAgent): Promise<ISocialEventManagerWriteResult>;
+    makeIdentityClaim(options: SocialEventManagerWriteOptions.IMakeIdentityClaim): Promise<ISocialEventManagerWriteResult>;
+    submitIdentityVerification(options: SocialEventManagerWriteOptions.ISubmitIdentityVerification): Promise<ISocialEventManagerWriteResult>;
 }

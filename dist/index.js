@@ -6219,6 +6219,37 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             const result = await this.handleEventSubmission(event);
             return result;
         }
+        async makeIdentityClaim(options) {
+            let event = {
+                "kind": 1005,
+                "created_at": Math.round(Date.now() / 1000),
+                "content": '',
+                "tags": [
+                    ["platform", options.platform],
+                    ["identity", options.identity],
+                    ["proof", options.proof]
+                ]
+            };
+            const result = await this.handleEventSubmission(event);
+            return result;
+        }
+        async submitIdentityVerification(options) {
+            let event = {
+                "kind": 1006,
+                "created_at": Math.round(Date.now() / 1000),
+                "content": '',
+                "tags": [
+                    ["e", options.claimEventId],
+                    ["p", options.claimantPubKey],
+                    ["platform", options.platform],
+                    ["identity", options.identity],
+                    ["result", options.result.toString()],
+                    ["eas", options.eas]
+                ]
+            };
+            const result = await this.handleEventSubmission(event);
+            return result;
+        }
     }
     exports.NostrEventManagerWrite = NostrEventManagerWrite;
 });
@@ -7301,6 +7332,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchUserAgents(options) {
             return []; // Not supported
         }
+        async fetchIdentityClaims(options) {
+            return []; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8341,12 +8375,33 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
         }
         async fetchUserAgents(options) {
             const { pubkey, name } = options;
+            const decodedPubKey = pubkey.startsWith('npub1') ? index_4.Nip19.decode(pubkey).data : pubkey;
             let msg = {
-                pubkey,
+                pubkey: decodedPubKey,
                 name
             };
             const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-agents', msg);
             return fetchEventsResponse.events || [];
+        }
+        async fetchIdentityClaims(options) {
+            const { pubkey } = options;
+            const decodedPubKey = pubkey.startsWith('npub1') ? index_4.Nip19.decode(pubkey).data : pubkey;
+            let msg = {
+                pubkey: decodedPubKey
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-identity-claims', msg);
+            const results = [];
+            for (let item of fetchEventsResponse.data) {
+                results.push({
+                    platform: item.platform,
+                    identity: item.identity,
+                    proof: item.proof,
+                    claimEventId: item.eventId,
+                    result: item.result,
+                    eas: item.eas
+                });
+            }
+            return results;
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -11567,6 +11622,18 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 agents.push(agentInfo);
             }
             return agents;
+        }
+        async makeIdentityClaim(claim) {
+            const result = await this._socialEventManagerWrite.makeIdentityClaim(claim);
+            return result;
+        }
+        async submitIdentityVerification(verification) {
+            const result = await this._socialEventManagerWrite.submitIdentityVerification(verification);
+            return result;
+        }
+        async fetchIdentityClaims(pubkey) {
+            const claims = await this._socialEventManagerRead.fetchIdentityClaims({ pubkey });
+            return claims;
         }
         async fetchRegions() {
             return this.systemDataManager.fetchRegions();

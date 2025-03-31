@@ -1,5 +1,5 @@
 import { Nip19, Event, Keys } from "../core/index";
-import { CommunityRole, CommunityScoreType, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, INostrEvent, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, ITokenActivity, IUserCommunityScore, IUserCommunityScoreLog, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
+import { CommunityRole, CommunityScoreType, IChannelInfo, ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IFetchNotesOptions, IIdentityClaimResult, INostrEvent, INostrMetadata, IPaymentActivity, ISocialEventManagerRead, ITokenActivity, IUserCommunityScore, IUserCommunityScoreLog, IUserProfile, SocialEventManagerReadOptions } from "../interfaces";
 import { INostrCommunicationManager, INostrRestAPIManager } from "./communication";
 import { SocialUtilsManager } from "./utilsManager";
 import { NostrEventManagerRead } from "./eventManagerRead";
@@ -1076,12 +1076,34 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
 
     async fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents) {
         const { pubkey, name } = options;
+        const decodedPubKey = pubkey.startsWith('npub1') ? Nip19.decode(pubkey).data : pubkey;
         let msg = {
-            pubkey,
+            pubkey: decodedPubKey,
             name
         };
         const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-user-agents', msg);
         return fetchEventsResponse.events || [];
+    }
+
+    async fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims) {
+        const { pubkey } = options;
+        const decodedPubKey = pubkey.startsWith('npub1') ? Nip19.decode(pubkey).data : pubkey;
+        let msg = {
+            pubkey: decodedPubKey
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-identity-claims', msg);
+        const results: IIdentityClaimResult[] = [];
+        for (let item of fetchEventsResponse.data) {
+            results.push({
+                platform: item.platform,
+                identity: item.identity,
+                proof: item.proof,
+                claimEventId: item.eventId,
+                result: item.result,
+                eas: item.eas
+            });
+        }
+        return results;
     }
 }
 

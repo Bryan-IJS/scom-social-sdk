@@ -1,4 +1,4 @@
-import { IFetchPaymentActivitiesOptions, IPaymentActivity, ITokenActivity } from "./misc";
+import { IFetchPaymentActivitiesOptions, IIdentityClaimResult, IPaymentActivity, ITokenActivity } from "./misc";
 import { Nip19 } from "../core/index";
 import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore, IUserCommunityScoreLog } from "./community";
 import { IAllUserRelatedChannels } from "./channel";
@@ -248,6 +248,9 @@ export declare namespace SocialEventManagerReadOptions {
         pubkey: string;
         name?: string;
     }
+    interface IFetchIdentityClaims {
+        pubkey: string;
+    }
 }
 export interface ISocialEventManagerReadResult {
     error?: string;
@@ -319,4 +322,5 @@ export interface ISocialEventManagerRead {
     fetchUserCommunityScoreLogs(options: SocialEventManagerReadOptions.IFetchUserCommunityScoreLogs): Promise<IUserCommunityScoreLog[]>;
     fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
     fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
+    fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
 }

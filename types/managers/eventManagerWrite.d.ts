@@ -154,5 +154,13 @@ declare class NostrEventManagerWrite implements ISocialEventManagerWrite {
         event: Event.VerifiedEvent<number>;
         relayResponse: import("../interfaces").INostrSubmitResponse;
     }>;
+    makeIdentityClaim(options: SocialEventManagerWriteOptions.IMakeIdentityClaim): Promise<{
+        event: Event.VerifiedEvent<number>;
+        relayResponse: import("../interfaces").INostrSubmitResponse;
+    }>;
+    submitIdentityVerification(options: SocialEventManagerWriteOptions.ISubmitIdentityVerification): Promise<{
+        event: Event.VerifiedEvent<number>;
+        relayResponse: import("../interfaces").INostrSubmitResponse;
+    }>;
 }
 export { NostrEventManagerWrite };
