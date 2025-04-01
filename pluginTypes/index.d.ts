@@ -1766,6 +1766,7 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
     export interface IAgentSkillInfo {
         id: string;
         name: string;
+        chatId?: string;
         category?: string;
         knowledge?: string[];
         capabilities?: IAgentCapability;

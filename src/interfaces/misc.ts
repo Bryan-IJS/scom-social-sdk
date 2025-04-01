@@ -235,6 +235,7 @@ export interface IAgentCapability {
 export interface IAgentSkillInfo {
 	id: string;
 	name: string;
+	chatId?: string;
 	category?: string;
 	knowledge?: string[];
 	capabilities?: IAgentCapability;
