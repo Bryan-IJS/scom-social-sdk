@@ -207,10 +207,7 @@ export interface IAgentSkillInfo {
     name: string;
     chatId?: string;
     category?: string;
-    knowledge?: string[];
-    capabilities?: IAgentCapability;
-    authentication?: string;
-    schema?: string;
+    data?: any;
 }
 export declare enum AgentTaskScheduleType {
     NoRepeat = "NoRepeat",

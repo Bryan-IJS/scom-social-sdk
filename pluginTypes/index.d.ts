@@ -1768,10 +1768,7 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         name: string;
         chatId?: string;
         category?: string;
-        knowledge?: string[];
-        capabilities?: IAgentCapability;
-        authentication?: string;
-        schema?: string;
+        data?: any;
     }
     export enum AgentTaskScheduleType {
         NoRepeat = "NoRepeat",
