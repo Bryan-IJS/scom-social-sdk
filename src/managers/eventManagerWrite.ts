@@ -1288,6 +1288,8 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
             name: options.name,
             description: options.description,
             avatar: options.avatar,
+            banner: options.banner,
+            npub: options.npub,
             enclave: options.enclave,
             skills: options.skills
         });
