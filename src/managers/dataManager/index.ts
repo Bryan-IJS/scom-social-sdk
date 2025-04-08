@@ -35,7 +35,6 @@ class SocialDataManager {
         this._apiBaseUrl = config.apiBaseUrl || '';
         this._ipLocationServiceBaseUrl = config.ipLocationServiceBaseUrl;
         this._publicIndexingRelay = config.publicIndexingRelay;
-        const writeRelaysManagers = this._initializeWriteRelaysManagers(config.writeRelays);
         if (config.readManager) {
             this._socialEventManagerRead = config.readManager;
         }
@@ -57,10 +56,16 @@ class SocialDataManager {
                 );
             }
         }
-        this._socialEventManagerWrite = new NostrEventManagerWrite(
-            writeRelaysManagers,
-            this._publicIndexingRelay
-        );
+        if (config.writeManager) {
+            this._socialEventManagerWrite = config.writeManager;
+        }
+        else {
+            const writeRelaysManagers = this._initializeWriteRelaysManagers(config.writeRelays);
+            this._socialEventManagerWrite = new NostrEventManagerWrite(
+                writeRelaysManagers,
+                this._publicIndexingRelay
+            );
+        }
         if (config.mqttBrokerUrl) {
             try {
                 this.mqttManager = new MqttManager({

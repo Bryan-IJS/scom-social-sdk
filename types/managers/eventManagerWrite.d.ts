@@ -9,7 +9,13 @@ declare class NostrEventManagerWrite implements ISocialEventManagerWrite {
     set nostrCommunicationManagers(managers: INostrCommunicationManager[]);
     set privateKey(privateKey: string);
     protected calculateConversationPathTags(conversationPath: IConversationPath): string[][];
-    private handleEventSubmission;
+    protected handleEventSubmission(event: Event.EventTemplate<number>, options?: {
+        privateKey?: string;
+        mainRelayOnly?: boolean;
+    }): Promise<{
+        event: Event.VerifiedEvent<number>;
+        relayResponse: import("../interfaces").INostrSubmitResponse;
+    }>;
     updateContactList(content: string, contactPubKeys: string[]): Promise<{
         event: Event.VerifiedEvent<number>;
         relayResponse: import("../interfaces").INostrSubmitResponse;

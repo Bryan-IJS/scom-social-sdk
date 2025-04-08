@@ -1,5 +1,6 @@
 import { IMqttClientOptions } from "./common";
 import { ISocialEventManagerRead } from "./eventManagerRead";
+import { ISocialEventManagerWrite } from "./eventManagerWrite";
 import { IMarketplaceOrder } from "./marketplace";
 export declare namespace SocialDataManagerOptions {
     interface IFetchUserEthWalletAccountsInfo {
@@ -64,6 +65,7 @@ export interface ISocialDataManagerConfig {
     writeRelays?: string[];
     readRelay?: string;
     readManager?: ISocialEventManagerRead;
+    writeManager?: ISocialEventManagerWrite;
     publicIndexingRelay?: string;
     apiBaseUrl?: string;
     ipLocationServiceBaseUrl?: string;

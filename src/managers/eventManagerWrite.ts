@@ -92,7 +92,7 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
         return tags;
     }
 
-    private async handleEventSubmission(event: Event.EventTemplate<number>, options?: { privateKey?: string, mainRelayOnly?: boolean }) {
+    protected async handleEventSubmission(event: Event.EventTemplate<number>, options?: { privateKey?: string, mainRelayOnly?: boolean }) {
         let mainRelayOnly = options?.mainRelayOnly;
         let privateKey = options?.privateKey || this._privateKey;
         const verifiedEvent = Event.finishEvent(event, privateKey);

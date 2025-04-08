@@ -3682,11 +3682,11 @@ define("@scom/scom-social-sdk/interfaces/eventManagerRead.ts", ["require", "expo
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
-define("@scom/scom-social-sdk/interfaces/dataManager.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
-define("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-social-sdk/interfaces/dataManager.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
@@ -8636,7 +8636,6 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             this._apiBaseUrl = config.apiBaseUrl || '';
             this._ipLocationServiceBaseUrl = config.ipLocationServiceBaseUrl;
             this._publicIndexingRelay = config.publicIndexingRelay;
-            const writeRelaysManagers = this._initializeWriteRelaysManagers(config.writeRelays);
             if (config.readManager) {
                 this._socialEventManagerRead = config.readManager;
             }
@@ -8652,7 +8651,13 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                     this._socialEventManagerRead = new eventManagerRead_2.NostrEventManagerRead(nostrReadRelayManager);
                 }
             }
-            this._socialEventManagerWrite = new eventManagerWrite_2.NostrEventManagerWrite(writeRelaysManagers, this._publicIndexingRelay);
+            if (config.writeManager) {
+                this._socialEventManagerWrite = config.writeManager;
+            }
+            else {
+                const writeRelaysManagers = this._initializeWriteRelaysManagers(config.writeRelays);
+                this._socialEventManagerWrite = new eventManagerWrite_2.NostrEventManagerWrite(writeRelaysManagers, this._publicIndexingRelay);
+            }
             if (config.mqttBrokerUrl) {
                 try {
                     this.mqttManager = new scom_mqtt_1.MqttManager({
