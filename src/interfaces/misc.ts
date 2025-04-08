@@ -275,6 +275,8 @@ export interface IAgentInfo {
 	name: string;
 	description?: string;
 	avatar?: string;
+	banner?: string;
+	npub?: string;
 	enclave: IEnclaveInfo;
 	skills?: IAgentSkillInfo[];
 	tasks?: IAgentTaskInfo[];

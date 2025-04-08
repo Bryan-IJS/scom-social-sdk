@@ -4691,6 +4691,8 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                 name,
                 description: data.description,
                 avatar: data.avatar,
+                banner: data.banner,
+                npub: data.npub,
                 enclave: data.enclave,
                 skills: data.skills,
                 scpData
@@ -6191,6 +6193,8 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
                 name: options.name,
                 description: options.description,
                 avatar: options.avatar,
+                banner: options.banner,
+                npub: options.npub,
                 enclave: options.enclave,
                 skills: options.skills
             });

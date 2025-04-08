@@ -1801,6 +1801,8 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         name: string;
         description?: string;
         avatar?: string;
+        banner?: string;
+        npub?: string;
         enclave: IEnclaveInfo;
         skills?: IAgentSkillInfo[];
         tasks?: IAgentTaskInfo[];
