@@ -1812,7 +1812,8 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
     export interface IIdentityClaim {
         platform: IdentityPlatform;
         identity: string;
-        proof: string;
+        proof?: string;
+        agentPubKey?: string;
     }
     export interface IIdentityVerification {
         claimEventId: string;
@@ -3378,6 +3379,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         updateAgent(info: IAgentInfo): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         fetchUserAgents(pubkey: string): Promise<IAgentInfo[]>;
         makeIdentityClaim(claim: IIdentityClaim): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
+        acknowledgeInitialIdentityClaim(eventId: string): Promise<any>;
         submitIdentityVerification(verification: IIdentityVerification): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         fetchIdentityClaims(pubkey: string): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").IIdentityClaimResult[]>;
         fetchRegions(): Promise<IRegion[]>;

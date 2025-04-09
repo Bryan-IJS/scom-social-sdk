@@ -6224,16 +6224,22 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
             return result;
         }
         async makeIdentityClaim(options) {
+            const eventKind = options.proof ? 1005 : 20005; // 20005 is for initial identity claim
             let event = {
-                "kind": 1005,
+                "kind": eventKind,
                 "created_at": Math.round(Date.now() / 1000),
                 "content": '',
                 "tags": [
                     ["platform", options.platform],
                     ["identity", options.identity],
-                    ["proof", options.proof]
                 ]
             };
+            if (options.proof) {
+                event.tags.push(["proof", options.proof]);
+            }
+            if (options.agentPubKey) {
+                event.tags.push(["agent", options.agentPubKey]);
+            }
             const result = await this.handleEventSubmission(event);
             return result;
         }
@@ -11634,6 +11640,31 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
         }
         async makeIdentityClaim(claim) {
             const result = await this._socialEventManagerWrite.makeIdentityClaim(claim);
+            return result;
+        }
+        //Used by an identity agent to acknowledge the initial identity claim made by the user
+        async acknowledgeInitialIdentityClaim(eventId) {
+            const authHeader = utilsManager_6.SocialUtilsManager.constructAuthHeader(this._privateKey);
+            const data = {
+                eventId,
+            };
+            let result;
+            try {
+                let response = await fetch(this._publicIndexingRelay + '/acknowledge-initial-identity-claim', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: authHeader
+                    },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    result = await response.json();
+                }
+            }
+            catch (err) {
+            }
             return result;
         }
         async submitIdentityVerification(verification) {

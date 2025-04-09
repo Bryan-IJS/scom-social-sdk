@@ -3231,6 +3231,32 @@ class SocialDataManager {
         return result;
     }
 
+    //Used by an identity agent to acknowledge the initial identity claim made by the user
+    async acknowledgeInitialIdentityClaim(eventId: string) {
+        const authHeader = SocialUtilsManager.constructAuthHeader(this._privateKey);
+        const data = {
+            eventId,
+        };
+        let result;
+        try {
+            let response = await fetch(this._publicIndexingRelay + '/acknowledge-initial-identity-claim', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader
+                },
+                body: JSON.stringify(data)
+            });
+            if (response.ok) {
+                result = await response.json();
+            }
+        }
+        catch (err) {
+        }
+        return result;
+    }
+
     async submitIdentityVerification(verification: IIdentityVerification) {
         const result = await this._socialEventManagerWrite.submitIdentityVerification(verification);
         return result;

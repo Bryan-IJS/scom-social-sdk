@@ -251,7 +251,8 @@ export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "eth
 export interface IIdentityClaim {
     platform: IdentityPlatform;
     identity: string;
-    proof: string;
+    proof?: string;
+    agentPubKey?: string;
 }
 export interface IIdentityVerification {
     claimEventId: string;

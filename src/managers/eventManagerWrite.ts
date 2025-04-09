@@ -1320,16 +1320,22 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
     }
 
     async makeIdentityClaim(options: SocialEventManagerWriteOptions.IMakeIdentityClaim) {
+        const eventKind = options.proof ? 1005 : 20005; // 20005 is for initial identity claim
         let event = {
-            "kind": 1005,
+            "kind": eventKind,
             "created_at": Math.round(Date.now() / 1000),
             "content": '',
             "tags": [
                 ["platform", options.platform],
                 ["identity", options.identity],
-                ["proof", options.proof]
             ]
         };
+        if (options.proof) {
+            event.tags.push(["proof", options.proof]);
+        }
+        if (options.agentPubKey) {
+            event.tags.push(["agent", options.agentPubKey]);
+        }
         const result = await this.handleEventSubmission(event);
         return result;
     }
