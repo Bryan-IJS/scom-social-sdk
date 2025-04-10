@@ -11667,6 +11667,33 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             }
             return result;
         }
+        async fetchIdentityAgentPubkey(eventId) {
+            const authHeader = utilsManager_6.SocialUtilsManager.constructAuthHeader(this._privateKey);
+            const data = {
+                eventId,
+            };
+            let result;
+            try {
+                let response = await fetch(this._publicIndexingRelay + '/fetch-identity-agent-pubkey', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: authHeader
+                    },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    result = await response.json();
+                }
+            }
+            catch (err) {
+            }
+            const pubkey = result?.data?.agentPubkey;
+            return {
+                pubkey
+            };
+        }
         async submitIdentityVerification(verification) {
             const result = await this._socialEventManagerWrite.submitIdentityVerification(verification);
             return result;

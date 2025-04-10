@@ -3257,6 +3257,34 @@ class SocialDataManager {
         return result;
     }
 
+    async fetchIdentityAgentPubkey(eventId: string) {
+        const authHeader = SocialUtilsManager.constructAuthHeader(this._privateKey);
+        const data = {
+            eventId,
+        };
+        let result;
+        try {
+            let response = await fetch(this._publicIndexingRelay + '/fetch-identity-agent-pubkey', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader
+                },
+                body: JSON.stringify(data)
+            });
+            if (response.ok) {
+                result = await response.json();
+            }
+        }
+        catch (err) {
+        }
+        const pubkey: string = result?.data?.agentPubkey;
+        return {
+            pubkey
+        };
+    }
+
     async submitIdentityVerification(verification: IIdentityVerification) {
         const result = await this._socialEventManagerWrite.submitIdentityVerification(verification);
         return result;

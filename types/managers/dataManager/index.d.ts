@@ -251,6 +251,9 @@ declare class SocialDataManager {
     fetchUserAgents(pubkey: string): Promise<IAgentInfo[]>;
     makeIdentityClaim(claim: IIdentityClaim): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     acknowledgeInitialIdentityClaim(eventId: string): Promise<any>;
+    fetchIdentityAgentPubkey(eventId: string): Promise<{
+        pubkey: string;
+    }>;
     submitIdentityVerification(verification: IIdentityVerification): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     fetchIdentityClaims(pubkey: string): Promise<import("../../interfaces").IIdentityClaimResult[]>;
     fetchRegions(): Promise<IRegion[]>;
