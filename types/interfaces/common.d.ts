@@ -80,3 +80,4 @@ export interface INostrCommunicationManager {
 export interface INostrRestAPIManager extends INostrCommunicationManager {
     fetchEventsFromAPI(endpoint: string, msg: any, authHeader?: string): Promise<INostrFetchEventsResponse>;
 }
+export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";

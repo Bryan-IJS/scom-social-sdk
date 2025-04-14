@@ -1,11 +1,12 @@
-import { IConversationPath, INostrEvent, INoteInfo } from "./common";
+import { IConversationPath, IdentityPlatform, INostrEvent, INoteInfo } from "./common";
 export declare enum MembershipType {
     Open = "Open",
     Protected = "Protected"
 }
 export declare enum ProtectedMembershipPolicyType {
     TokenExclusive = "TokenExclusive",
-    Whitelist = "Whitelist"
+    Whitelist = "Whitelist",
+    IdentityExclusive = "IdentityExclusive"
 }
 export declare enum PaymentModel {
     OneTimePurchase = "OneTimePurchase",
@@ -54,6 +55,10 @@ export interface ISubscriptionDiscountRule {
     fixedPrice?: number;
     discountApplication: number;
 }
+export interface IIdentityPattern {
+    platform: IdentityPlatform;
+    pattern?: string;
+}
 export interface IProtectedMembershipPolicy {
     policyType: ProtectedMembershipPolicyType;
     name?: string;
@@ -73,6 +78,7 @@ export interface IProtectedMembershipPolicy {
     commissionRate?: number;
     affiliates?: string[];
     recipient?: string;
+    identityPatterns?: IIdentityPattern[];
 }
 export interface ICommunityScpData {
     publicKey?: string;

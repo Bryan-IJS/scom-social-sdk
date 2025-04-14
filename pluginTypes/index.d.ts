@@ -1180,17 +1180,19 @@ declare module "@scom/scom-social-sdk/interfaces/common.ts" {
     export interface INostrRestAPIManager extends INostrCommunicationManager {
         fetchEventsFromAPI(endpoint: string, msg: any, authHeader?: string): Promise<INostrFetchEventsResponse>;
     }
+    export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/community.ts" />
 declare module "@scom/scom-social-sdk/interfaces/community.ts" {
-    import { IConversationPath, INostrEvent, INoteInfo } from "@scom/scom-social-sdk/interfaces/common.ts";
+    import { IConversationPath, IdentityPlatform, INostrEvent, INoteInfo } from "@scom/scom-social-sdk/interfaces/common.ts";
     export enum MembershipType {
         Open = "Open",
         Protected = "Protected"
     }
     export enum ProtectedMembershipPolicyType {
         TokenExclusive = "TokenExclusive",
-        Whitelist = "Whitelist"
+        Whitelist = "Whitelist",
+        IdentityExclusive = "IdentityExclusive"
     }
     export enum PaymentModel {
         OneTimePurchase = "OneTimePurchase",
@@ -1239,6 +1241,10 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         fixedPrice?: number;
         discountApplication: number;
     }
+    export interface IIdentityPattern {
+        platform: IdentityPlatform;
+        pattern?: string;
+    }
     export interface IProtectedMembershipPolicy {
         policyType: ProtectedMembershipPolicyType;
         name?: string;
@@ -1258,6 +1264,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         commissionRate?: number;
         affiliates?: string[];
         recipient?: string;
+        identityPatterns?: IIdentityPattern[];
     }
     export interface ICommunityScpData {
         publicKey?: string;
@@ -1560,7 +1567,7 @@ declare module "@scom/scom-social-sdk/interfaces/channel.ts" {
 /// <amd-module name="@scom/scom-social-sdk/interfaces/misc.ts" />
 declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
     import { IChannelInfo } from "@scom/scom-social-sdk/interfaces/channel.ts";
-    import { IConversationPath, INostrEvent, INostrMetadata, INoteInfo } from "@scom/scom-social-sdk/interfaces/common.ts";
+    import { IConversationPath, IdentityPlatform, INostrEvent, INostrMetadata, INoteInfo } from "@scom/scom-social-sdk/interfaces/common.ts";
     import { INoteCommunity } from "@scom/scom-social-sdk/interfaces/community.ts";
     export interface IUserProfile {
         id: string;
@@ -1808,7 +1815,6 @@ declare module "@scom/scom-social-sdk/interfaces/misc.ts" {
         tasks?: IAgentTaskInfo[];
         scpData?: IAgentScpData;
     }
-    export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";
     export interface IIdentityClaim {
         platform: IdentityPlatform;
         identity: string;

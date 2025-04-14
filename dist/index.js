@@ -3558,6 +3558,7 @@ define("@scom/scom-social-sdk/interfaces/community.ts", ["require", "exports"], 
     (function (ProtectedMembershipPolicyType) {
         ProtectedMembershipPolicyType["TokenExclusive"] = "TokenExclusive";
         ProtectedMembershipPolicyType["Whitelist"] = "Whitelist";
+        ProtectedMembershipPolicyType["IdentityExclusive"] = "IdentityExclusive";
     })(ProtectedMembershipPolicyType = exports.ProtectedMembershipPolicyType || (exports.ProtectedMembershipPolicyType = {}));
     var PaymentModel;
     (function (PaymentModel) {

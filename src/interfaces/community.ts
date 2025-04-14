@@ -1,4 +1,4 @@
-import { IConversationPath, INostrEvent, INoteInfo } from "./common";
+import { IConversationPath, IdentityPlatform, INostrEvent, INoteInfo } from "./common";
 
 export enum MembershipType {
 	Open = 'Open',
@@ -7,7 +7,8 @@ export enum MembershipType {
 
 export enum ProtectedMembershipPolicyType {
 	TokenExclusive = 'TokenExclusive',
-	Whitelist = 'Whitelist'
+	Whitelist = 'Whitelist',
+	IdentityExclusive = 'IdentityExclusive',
 }
 
 export enum PaymentModel {
@@ -65,6 +66,11 @@ export interface ISubscriptionDiscountRule {
 	discountApplication: number; // 0: FirstTimeOnly, 1: RenewalsOnly, 2: All
 }
 
+export interface IIdentityPattern {
+	platform: IdentityPlatform;
+	pattern?: string;
+}
+
 export interface IProtectedMembershipPolicy {
 	policyType: ProtectedMembershipPolicyType;
 	name?: string;
@@ -84,6 +90,7 @@ export interface IProtectedMembershipPolicy {
 	commissionRate?: number;
 	affiliates?: string[];
     recipient?: string;
+	identityPatterns?: IIdentityPattern[];
 }
 
 //SCP-1 Kind 34550
