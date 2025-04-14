@@ -1,5 +1,5 @@
 import { IChannelInfo } from "./channel";
-import { IConversationPath, INostrEvent, INostrMetadata, INoteInfo } from "./common";
+import { IConversationPath, IdentityPlatform, INostrEvent, INostrMetadata, INoteInfo } from "./common";
 import { INoteCommunity } from "./community";
 
 export interface IUserProfile {
@@ -282,8 +282,6 @@ export interface IAgentInfo {
 	tasks?: IAgentTaskInfo[];
 	scpData?: IAgentScpData;
 }
-
-export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";
 
 export interface IIdentityClaim {
 	platform: IdentityPlatform;
