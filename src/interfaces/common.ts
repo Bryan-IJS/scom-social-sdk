@@ -94,4 +94,4 @@ export interface INostrRestAPIManager extends INostrCommunicationManager {
     fetchEventsFromAPI(endpoint: string, msg: any, authHeader?: string): Promise<INostrFetchEventsResponse>;
 }
 
-export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";
+export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum" | "telegram";
