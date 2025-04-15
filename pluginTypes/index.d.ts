@@ -1180,7 +1180,7 @@ declare module "@scom/scom-social-sdk/interfaces/common.ts" {
     export interface INostrRestAPIManager extends INostrCommunicationManager {
         fetchEventsFromAPI(endpoint: string, msg: any, authHeader?: string): Promise<INostrFetchEventsResponse>;
     }
-    export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum";
+    export type IdentityPlatform = "email" | "twitter" | "github" | "bitcoin" | "ethereum" | "telegram";
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/community.ts" />
 declare module "@scom/scom-social-sdk/interfaces/community.ts" {
