@@ -1241,9 +1241,10 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         fixedPrice?: number;
         discountApplication: number;
     }
-    export interface IIdentityPattern {
+    export interface IIdentityAccess {
         platform: IdentityPlatform;
-        pattern?: string;
+        access?: 'all-users' | 'verified-users';
+        restrictToIdentity?: string[];
     }
     export interface IProtectedMembershipPolicy {
         policyType: ProtectedMembershipPolicyType;
@@ -1264,7 +1265,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         commissionRate?: number;
         affiliates?: string[];
         recipient?: string;
-        identityPatterns?: IIdentityPattern[];
+        identityAccess?: IIdentityAccess[];
     }
     export interface ICommunityScpData {
         publicKey?: string;
