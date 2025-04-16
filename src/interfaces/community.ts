@@ -66,9 +66,10 @@ export interface ISubscriptionDiscountRule {
 	discountApplication: number; // 0: FirstTimeOnly, 1: RenewalsOnly, 2: All
 }
 
-export interface IIdentityPattern {
+export interface IIdentityAccess {
 	platform: IdentityPlatform;
-	pattern?: string;
+	access?: 'all-users' | 'verified-users';
+	restrictToIdentity?: string[];
 }
 
 export interface IProtectedMembershipPolicy {
@@ -90,7 +91,7 @@ export interface IProtectedMembershipPolicy {
 	commissionRate?: number;
 	affiliates?: string[];
     recipient?: string;
-	identityPatterns?: IIdentityPattern[];
+	identityAccess?: IIdentityAccess[];
 }
 
 //SCP-1 Kind 34550
