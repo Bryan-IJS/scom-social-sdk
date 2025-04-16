@@ -286,6 +286,12 @@ class NostrEventManagerWrite implements ISocialEventManagerWrite {
                 info.privateRelay
             ]);
         }
+        if (info.gatekeeperUrl) {
+            event.tags.push([
+                "gatekeeper_url",
+                info.gatekeeperUrl
+            ]);
+        }
         if (info.scpData) {
             let encodedScpData = SocialUtilsManager.utf8ToBase64('$scp:' + JSON.stringify(info.scpData));
             event.tags.push([

@@ -207,6 +207,7 @@ export interface ICommunityInfo extends ICommunityBasicInfo {
 	memberKeyMap?: Record<string, string>;
 	privateRelay?: string;
 	gatekeeperNpub?: string;
+	gatekeeperUrl?: string;
 	policies?: IProtectedMembershipPolicy[];
 	pointSystem?: ICommunityPointSystem;
 	collectibles?: ICommunityCollectible[];
@@ -238,6 +239,7 @@ export interface INewCommunityInfo {
 	// memberIds?: string[];
 	privateRelay?: string;
 	gatekeeperNpub?: string;
+	gatekeeperUrl?: string;
 	policies?: IProtectedMembershipPolicy[];
 	pointSystem?: ICommunityPointSystem;
 	collectibles?: ICommunityCollectible[];
