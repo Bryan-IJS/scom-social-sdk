@@ -297,7 +297,11 @@ class SocialDataManager {
                 since: options.since,
                 until: options.until
             };
-            let url = `${options.gatekeeperUrl}/communities/post-keys`;
+            let gatekeeperUrl = options.gatekeeperUrl;
+            if (!gatekeeperUrl.endsWith('/communities')) {
+                gatekeeperUrl = `${gatekeeperUrl}/communities`;
+            }
+            let url = `${gatekeeperUrl}/post-keys`;
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -333,7 +337,11 @@ class SocialDataManager {
                 message: options.message,
                 signature: options.signature
             };
-            let url = `${options.gatekeeperUrl}/communities/post-keys`;
+            let gatekeeperUrl = options.gatekeeperUrl;
+            if (!gatekeeperUrl.endsWith('/communities')) {
+                gatekeeperUrl = `${gatekeeperUrl}/communities`;
+            }
+            let url = `${gatekeeperUrl}/post-keys`;
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -408,7 +416,11 @@ class SocialDataManager {
                     message: options.message,
                     signature: signature
                 };
-                let url = `${relay}/communities/post-keys`;
+                let gatekeeperUrl = relay;
+                if (!gatekeeperUrl.endsWith('/communities')) {
+                    gatekeeperUrl = `${gatekeeperUrl}/communities`;
+                }
+                let url = `${gatekeeperUrl}/post-keys`;
                 let response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -431,7 +443,7 @@ class SocialDataManager {
     }
 
     async checkIfUserHasAccessToCommunity(options: ICheckIfUserHasAccessToCommunityOptions) {
-        const { communityInfo, gatekeeperUrl, walletAddresses } = options;
+        let { communityInfo, gatekeeperUrl, walletAddresses } = options;
         let data: {
             hasAccess: boolean,
             subscriptions: ICommunitySubscription[],
@@ -444,7 +456,10 @@ class SocialDataManager {
             pubkey,
             walletAddresses
         };
-        let url = `${gatekeeperUrl}/communities/check-user-access`;
+        if (!gatekeeperUrl.endsWith('/communities')) {
+            gatekeeperUrl = `${gatekeeperUrl}/communities`;
+        }
+        let url = `${gatekeeperUrl}/check-user-access`;
         let response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -1287,6 +1302,7 @@ class SocialDataManager {
             membershipType: newInfo.membershipType,
             privateRelay: newInfo.privateRelay,
             gatekeeperNpub: newInfo.gatekeeperNpub,
+            gatekeeperUrl: newInfo.gatekeeperUrl,
             policies: newInfo.policies,
             pointSystem: newInfo.pointSystem,
             collectibles: newInfo.collectibles,

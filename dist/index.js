@@ -4252,6 +4252,7 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
             const image = event.tags.find(tag => tag[0] === 'image')?.[1];
             const avatar = event.tags.find(tag => tag[0] === 'avatar')?.[1];
             const privateRelay = event.tags.find(tag => tag[0] === 'private_relay')?.[1];
+            const gatekeeperUrl = event.tags.find(tag => tag[0] === 'gatekeeper_url')?.[1];
             const creatorId = index_1.Nip19.npubEncode(event.pubkey);
             const moderatorIds = event.tags.filter(tag => tag[0] === 'p' && tag?.[3] === 'moderator').map(tag => index_1.Nip19.npubEncode(tag[1]));
             const scpTag = event.tags.find(tag => tag[0] === 'scp');
@@ -4321,6 +4322,7 @@ define("@scom/scom-social-sdk/managers/utilsManager.ts", ["require", "exports", 
                 scpData,
                 eventData: event,
                 gatekeeperNpub,
+                gatekeeperUrl,
                 membershipType,
                 telegramBotUsername,
                 privateRelay,
@@ -5245,6 +5247,12 @@ define("@scom/scom-social-sdk/managers/eventManagerWrite.ts", ["require", "expor
                 event.tags.push([
                     "private_relay",
                     info.privateRelay
+                ]);
+            }
+            if (info.gatekeeperUrl) {
+                event.tags.push([
+                    "gatekeeper_url",
+                    info.gatekeeperUrl
                 ]);
             }
             if (info.scpData) {
@@ -8877,7 +8885,11 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                     since: options.since,
                     until: options.until
                 };
-                let url = `${options.gatekeeperUrl}/communities/post-keys`;
+                let gatekeeperUrl = options.gatekeeperUrl;
+                if (!gatekeeperUrl.endsWith('/communities')) {
+                    gatekeeperUrl = `${gatekeeperUrl}/communities`;
+                }
+                let url = `${gatekeeperUrl}/post-keys`;
                 let response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -8909,7 +8921,11 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                     message: options.message,
                     signature: options.signature
                 };
-                let url = `${options.gatekeeperUrl}/communities/post-keys`;
+                let gatekeeperUrl = options.gatekeeperUrl;
+                if (!gatekeeperUrl.endsWith('/communities')) {
+                    gatekeeperUrl = `${gatekeeperUrl}/communities`;
+                }
+                let url = `${gatekeeperUrl}/post-keys`;
                 let response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -8984,7 +9000,11 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                         message: options.message,
                         signature: signature
                     };
-                    let url = `${relay}/communities/post-keys`;
+                    let gatekeeperUrl = relay;
+                    if (!gatekeeperUrl.endsWith('/communities')) {
+                        gatekeeperUrl = `${gatekeeperUrl}/communities`;
+                    }
+                    let url = `${gatekeeperUrl}/post-keys`;
                     let response = await fetch(url, {
                         method: 'POST',
                         headers: {
@@ -9006,7 +9026,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
             return noteIdToPrivateKey;
         }
         async checkIfUserHasAccessToCommunity(options) {
-            const { communityInfo, gatekeeperUrl, walletAddresses } = options;
+            let { communityInfo, gatekeeperUrl, walletAddresses } = options;
             let data = { hasAccess: false, subscriptions: [], isWhiteListed: false };
             const pubkey = index_6.Keys.getPublicKey(this._privateKey);
             let bodyData = {
@@ -9015,7 +9035,10 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 pubkey,
                 walletAddresses
             };
-            let url = `${gatekeeperUrl}/communities/check-user-access`;
+            if (!gatekeeperUrl.endsWith('/communities')) {
+                gatekeeperUrl = `${gatekeeperUrl}/communities`;
+            }
+            let url = `${gatekeeperUrl}/check-user-access`;
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -9808,6 +9831,7 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
                 membershipType: newInfo.membershipType,
                 privateRelay: newInfo.privateRelay,
                 gatekeeperNpub: newInfo.gatekeeperNpub,
+                gatekeeperUrl: newInfo.gatekeeperUrl,
                 policies: newInfo.policies,
                 pointSystem: newInfo.pointSystem,
                 collectibles: newInfo.collectibles,

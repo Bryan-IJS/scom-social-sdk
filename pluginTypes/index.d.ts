@@ -1364,6 +1364,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         memberKeyMap?: Record<string, string>;
         privateRelay?: string;
         gatekeeperNpub?: string;
+        gatekeeperUrl?: string;
         policies?: IProtectedMembershipPolicy[];
         pointSystem?: ICommunityPointSystem;
         collectibles?: ICommunityCollectible[];
@@ -1392,6 +1393,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         telegramBotUsername?: string;
         privateRelay?: string;
         gatekeeperNpub?: string;
+        gatekeeperUrl?: string;
         policies?: IProtectedMembershipPolicy[];
         pointSystem?: ICommunityPointSystem;
         collectibles?: ICommunityCollectible[];
