@@ -1241,10 +1241,21 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         fixedPrice?: number;
         discountApplication: number;
     }
+    export enum AccessType {
+        All = "all",
+        Verified = "verified",
+        Specific = "specific"
+    }
+    export interface IRequiredToken {
+        networkCode: string;
+        tokenAddress?: string;
+        minimumBalance: number;
+    }
     export interface IIdentityAccess {
         platform: IdentityPlatform;
-        access?: 'all-users' | 'verified-users';
+        access?: AccessType;
         restrictToIdentity?: string[];
+        requiredToken?: IRequiredToken;
     }
     export interface IProtectedMembershipPolicy {
         policyType: ProtectedMembershipPolicyType;

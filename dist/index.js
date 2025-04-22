@@ -3548,7 +3548,7 @@ define("@scom/scom-social-sdk/interfaces/common.ts", ["require", "exports"], fun
 define("@scom/scom-social-sdk/interfaces/community.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.CommunityRole = exports.CommunityScoreType = exports.SubscriptionBundleType = exports.CampaignActivityType = exports.TokenType = exports.NftType = exports.PaymentMethod = exports.PaymentModel = exports.ProtectedMembershipPolicyType = exports.MembershipType = void 0;
+    exports.CommunityRole = exports.AccessType = exports.CommunityScoreType = exports.SubscriptionBundleType = exports.CampaignActivityType = exports.TokenType = exports.NftType = exports.PaymentMethod = exports.PaymentModel = exports.ProtectedMembershipPolicyType = exports.MembershipType = void 0;
     var MembershipType;
     (function (MembershipType) {
         MembershipType["Open"] = "Open";
@@ -3601,6 +3601,12 @@ define("@scom/scom-social-sdk/interfaces/community.ts", ["require", "exports"], 
         CommunityScoreType["Post"] = "Post";
         CommunityScoreType["Reply"] = "Reply";
     })(CommunityScoreType = exports.CommunityScoreType || (exports.CommunityScoreType = {}));
+    var AccessType;
+    (function (AccessType) {
+        AccessType["All"] = "all";
+        AccessType["Verified"] = "verified";
+        AccessType["Specific"] = "specific";
+    })(AccessType = exports.AccessType || (exports.AccessType = {}));
     var CommunityRole;
     (function (CommunityRole) {
         CommunityRole["Creator"] = "creator";
