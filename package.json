@@ -1,6 +1,6 @@
 {
     "name": "@scom/scom-social-sdk",
-    "version": "0.1.230",
+    "version": "0.1.231",
     "main": "lib/index.js",
     "plugin": "dist/index.js",
     "pluginTypes": "pluginTypes/index.d.ts",
@@ -11,14 +11,14 @@
         "@ijstech/ln-wallet": "^0.1.0",
         "@scom/scom-signer": "^0.1.0",
         "@scom/scom-mqtt": "^0.1.1",
-        "ws": "8.16.0"
+        "ws": "8.18.1"
     },
     "devDependencies": {
         "@ijstech/compiler": "^0.1.35",
         "@types/mocha": "9.1.1",
         "@types/node": "^18.18.6",
         "@types/ws": "^8.5.6",
-        "mocha": "10.0.0",
+        "mocha": "10.8.2",
         "ts-node": "^10.9.1",
         "typescript": "4.3.5"
     },
