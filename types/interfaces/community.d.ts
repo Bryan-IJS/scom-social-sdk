@@ -55,10 +55,16 @@ export interface ISubscriptionDiscountRule {
     fixedPrice?: number;
     discountApplication: number;
 }
+export interface IIdentityAccessTokenRequirement {
+    chainId: number;
+    tokenAddress?: string;
+    minBalance: number;
+}
 export interface IIdentityAccess {
     platform: IdentityPlatform;
     access?: 'all-users' | 'verified-users';
     restrictToIdentity?: string[];
+    tokenRequirement?: IIdentityAccessTokenRequirement;
 }
 export interface IProtectedMembershipPolicy {
     policyType: ProtectedMembershipPolicyType;

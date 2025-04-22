@@ -24,13 +24,13 @@ export enum PaymentMethod {
 
 export enum NftType {
 	ERC721 = 'ERC721',
-    ERC1155	= 'ERC1155'
+	ERC1155 = 'ERC1155'
 }
 
 export enum TokenType {
 	ERC20 = 'ERC20',
-	ERC721	= 'ERC721',
-	ERC1155	= 'ERC1155'
+	ERC721 = 'ERC721',
+	ERC1155 = 'ERC1155'
 }
 
 export enum CampaignActivityType {
@@ -66,10 +66,17 @@ export interface ISubscriptionDiscountRule {
 	discountApplication: number; // 0: FirstTimeOnly, 1: RenewalsOnly, 2: All
 }
 
+export interface IIdentityAccessTokenRequirement {       
+	chainId: number;       
+	tokenAddress?: string;    
+	minBalance: number; 
+}
+
 export interface IIdentityAccess {
 	platform: IdentityPlatform;
 	access?: 'all-users' | 'verified-users';
 	restrictToIdentity?: string[];
+	tokenRequirement?: IIdentityAccessTokenRequirement; // Optional token holding requirement
 }
 
 export interface IProtectedMembershipPolicy {
@@ -79,7 +86,7 @@ export interface IProtectedMembershipPolicy {
 	paymentModel?: PaymentModel;
 	paymentMethod?: PaymentMethod;
 	chainId?: number;
-    networkCode?: string;
+	networkCode?: string;
 	tokenAddress?: string;
 	tokenType?: TokenType;
 	tokenId?: number;
@@ -90,7 +97,7 @@ export interface IProtectedMembershipPolicy {
 	discountRules?: ISubscriptionDiscountRule[];
 	commissionRate?: number;
 	affiliates?: string[];
-    recipient?: string;
+	recipient?: string;
 	identityAccess?: IIdentityAccess[];
 }
 
@@ -141,11 +148,11 @@ interface ICommunityCollectibleAction {
 }
 
 export interface ICommunityCollectible {
-    name: string;
-    image?: string;
-    description?: string;
-    link?: string;
-    requiredPoints: number;
+	name: string;
+	image?: string;
+	description?: string;
+	link?: string;
+	requiredPoints: number;
 	actions?: ICommunityCollectibleAction;
 }
 
@@ -219,12 +226,12 @@ export interface ICommunityInfo extends ICommunityBasicInfo {
 }
 
 export interface ICommunityLeaderboard {
-    npub: string;
-    username: string;
-    displayName?: string;
-    avatar?: string;
-    internetIdentifier?: string;
-    point: number;
+	npub: string;
+	username: string;
+	displayName?: string;
+	avatar?: string;
+	internetIdentifier?: string;
+	point: number;
 }
 
 export interface INewCommunityInfo {
@@ -304,12 +311,12 @@ export interface INftSubscription {
 
 export interface ICommunitySubscription {
 	start: number;
-    end: number;
+	end: number;
 	currency: string;
-    chainId?: string;
-    nftAddress?: string;
-    nftId?: number;
-    txHash?: string;
+	chainId?: string;
+	nftAddress?: string;
+	nftId?: number;
+	txHash?: string;
 }
 
 export interface IUpdateCommunitySubscription {
@@ -350,7 +357,7 @@ export interface ICommunityGatekeeperInfo {
 }
 
 export interface IRetrieveCommunityPostKeysByNoteEventsOptions {
-	notes: INostrEvent[]; 
+	notes: INostrEvent[];
 	pubKey: string;
 	message: string;
 	getSignature: (message: string) => Promise<string>;
