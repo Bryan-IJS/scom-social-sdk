@@ -1241,6 +1241,11 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
         fixedPrice?: number;
         discountApplication: number;
     }
+    export enum AccessType {
+        All = "all",
+        Verified = "verified",
+        Specific = "specific"
+    }
     export interface IIdentityAccessTokenRequirement {
         chainId: number;
         tokenAddress?: string;
@@ -1248,7 +1253,7 @@ declare module "@scom/scom-social-sdk/interfaces/community.ts" {
     }
     export interface IIdentityAccess {
         platform: IdentityPlatform;
-        access?: 'all-users' | 'verified-users';
+        access?: AccessType;
         restrictToIdentity?: string[];
         tokenRequirement?: IIdentityAccessTokenRequirement;
     }
