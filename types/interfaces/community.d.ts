@@ -55,6 +55,11 @@ export interface ISubscriptionDiscountRule {
     fixedPrice?: number;
     discountApplication: number;
 }
+export declare enum AccessType {
+    All = "all",
+    Verified = "verified",
+    Specific = "specific"
+}
 export interface IIdentityAccessTokenRequirement {
     chainId: number;
     tokenAddress?: string;
@@ -62,7 +67,7 @@ export interface IIdentityAccessTokenRequirement {
 }
 export interface IIdentityAccess {
     platform: IdentityPlatform;
-    access?: 'all-users' | 'verified-users';
+    access?: AccessType;
     restrictToIdentity?: string[];
     tokenRequirement?: IIdentityAccessTokenRequirement;
 }
