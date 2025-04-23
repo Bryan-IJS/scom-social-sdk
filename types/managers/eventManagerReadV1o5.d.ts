@@ -79,5 +79,6 @@ declare class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
     getUserStaked(pubkey: string): Promise<number>;
     fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
     fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
+    fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
 }
 export { NostrEventManagerReadV1o5 };

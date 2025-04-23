@@ -3310,6 +3310,11 @@ class SocialDataManager {
         const claims = await this._socialEventManagerRead.fetchIdentityClaims({ pubkey });
         return claims;
     }
+
+    async fetchVerifiedIdentityClaimsByTelegram(username: string) {
+        const claims = await this._socialEventManagerRead.fetchVerifiedIdentityClaimsByTelegram({ username });
+        return claims;
+    }
     
     async fetchRegions() {
         return this.systemDataManager.fetchRegions();

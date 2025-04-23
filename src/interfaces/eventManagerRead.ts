@@ -253,6 +253,10 @@ export namespace SocialEventManagerReadOptions {
 	export interface IFetchIdentityClaims {
 		pubkey: string;
 	}
+
+	export interface IFetchVerifiedIdentityClaimsByTelegram {
+		username: string;
+	}
 }
 
 export interface ISocialEventManagerReadResult {
@@ -329,6 +333,7 @@ export interface ISocialEventManagerRead {
 	fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
 	fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
 	fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
+	fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
 	// fetchMetadata(options: IFetchMetadataOptions): Promise<INostrEvent[]>;
     // fetchReplies(options: IFetchRepliesOptions): Promise<INostrEvent[]>;
     // fetchFollowing(npubs: string[]): Promise<INostrEvent[]>;

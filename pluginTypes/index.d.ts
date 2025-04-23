@@ -2320,6 +2320,9 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         interface IFetchIdentityClaims {
             pubkey: string;
         }
+        interface IFetchVerifiedIdentityClaimsByTelegram {
+            username: string;
+        }
     }
     export interface ISocialEventManagerReadResult {
         error?: string;
@@ -2392,6 +2395,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
         fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
         fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
+        fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/eventManagerWrite.ts" />
@@ -2988,6 +2992,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerRead.ts" {
         fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
         fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<any[]>;
         fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<any[]>;
+        fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<any[]>;
     }
     export { NostrEventManagerRead };
 }
@@ -3074,6 +3079,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         getUserStaked(pubkey: string): Promise<number>;
         fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
         fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
+        fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3405,6 +3411,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         }>;
         submitIdentityVerification(verification: IIdentityVerification): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         fetchIdentityClaims(pubkey: string): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").IIdentityClaimResult[]>;
+        fetchVerifiedIdentityClaimsByTelegram(username: string): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").IIdentityClaimResult[]>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;
