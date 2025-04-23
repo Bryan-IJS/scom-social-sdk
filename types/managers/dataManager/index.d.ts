@@ -256,6 +256,7 @@ declare class SocialDataManager {
     }>;
     submitIdentityVerification(verification: IIdentityVerification): Promise<import("../../interfaces").ISocialEventManagerWriteResult>;
     fetchIdentityClaims(pubkey: string): Promise<import("../../interfaces").IIdentityClaimResult[]>;
+    fetchVerifiedIdentityClaimsByTelegram(username: string): Promise<import("../../interfaces").IIdentityClaimResult[]>;
     fetchRegions(): Promise<IRegion[]>;
     fetchCurrencies(): Promise<ICurrency[]>;
     fetchCryptocurrencies(): Promise<import("../../interfaces").ICryptocurrency[]>;

@@ -79,5 +79,6 @@ declare class NostrEventManagerRead implements ISocialEventManagerRead {
     fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
     fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<any[]>;
     fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<any[]>;
+    fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<any[]>;
 }
 export { NostrEventManagerRead };

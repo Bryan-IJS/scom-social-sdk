@@ -251,6 +251,9 @@ export declare namespace SocialEventManagerReadOptions {
     interface IFetchIdentityClaims {
         pubkey: string;
     }
+    interface IFetchVerifiedIdentityClaimsByTelegram {
+        username: string;
+    }
 }
 export interface ISocialEventManagerReadResult {
     error?: string;
@@ -323,4 +326,5 @@ export interface ISocialEventManagerRead {
     fetchTokenActivities(options: SocialEventManagerReadOptions.IFetchStakeRequestEvent): Promise<ITokenActivity[]>;
     fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
     fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
+    fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
 }

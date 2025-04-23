@@ -1105,6 +1105,23 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         }
         return results;
     }
+
+    async fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram) {
+        const { username } = options;
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-verified-identity-claims-by-telegram', username);
+        const results: IIdentityClaimResult[] = [];
+        for (let item of fetchEventsResponse.data) {
+            results.push({
+                platform: item.platform,
+                identity: item.identity,
+                proof: item.proof,
+                claimEventId: item.eventId,
+                result: item.result,
+                eas: item.eas
+            });
+        }
+        return results;
+    }
 }
 
 export {

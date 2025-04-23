@@ -7360,6 +7360,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchIdentityClaims(options) {
             return []; // Not supported
         }
+        async fetchVerifiedIdentityClaimsByTelegram(options) {
+            return []; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8415,6 +8418,22 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 pubkey: decodedPubKey
             };
             const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-identity-claims', msg);
+            const results = [];
+            for (let item of fetchEventsResponse.data) {
+                results.push({
+                    platform: item.platform,
+                    identity: item.identity,
+                    proof: item.proof,
+                    claimEventId: item.eventId,
+                    result: item.result,
+                    eas: item.eas
+                });
+            }
+            return results;
+        }
+        async fetchVerifiedIdentityClaimsByTelegram(options) {
+            const { username } = options;
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-verified-identity-claims-by-telegram', username);
             const results = [];
             for (let item of fetchEventsResponse.data) {
                 results.push({
@@ -11731,6 +11750,10 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
         }
         async fetchIdentityClaims(pubkey) {
             const claims = await this._socialEventManagerRead.fetchIdentityClaims({ pubkey });
+            return claims;
+        }
+        async fetchVerifiedIdentityClaimsByTelegram(username) {
+            const claims = await this._socialEventManagerRead.fetchVerifiedIdentityClaimsByTelegram({ username });
             return claims;
         }
         async fetchRegions() {
