@@ -367,78 +367,98 @@ class SocialDataManager {
 
     async retrieveCommunityPostKeysByNoteEvents(options: IRetrieveCommunityPostKeysByNoteEventsOptions) {
         let noteIdToPrivateKey: Record<string, string> = {};
-        let communityPrivateKeyMap: Record<string, string> = {};
-        const noteCommunityMappings = await this.createNoteCommunityMappings(options.notes);
-        if (noteCommunityMappings.noteCommunityInfoList.length === 0) return noteIdToPrivateKey;
-        const communityInfoMap: Record<string, ICommunityInfo> = {};
-        for (let communityInfo of noteCommunityMappings.communityInfoList) {
-            communityInfoMap[communityInfo.communityUri] = communityInfo;
-            if (communityInfo.membershipType === MembershipType.Open) continue;
-            let communityPrivateKey = await this.retrieveCommunityPrivateKey(communityInfo, this._privateKey);
-            if (communityPrivateKey) {
-                communityPrivateKeyMap[communityInfo.communityUri] = communityPrivateKey;
+        
+        const addToRelayMap = (
+            relayMap: Record<string, INoteCommunityInfo[]>, 
+            info: INoteCommunityInfo, 
+            community: ICommunityInfo
+        ): void => {
+            const targetRelay = community.privateRelay || 
+                              community.gatekeeperUrl || 
+                              options.gatekeeperUrl;
+                              
+            if (targetRelay) {
+                relayMap[targetRelay] = relayMap[targetRelay] || [];
+                relayMap[targetRelay].push(info);
             }
-        }
-        let relayToNotesMap: Record<string, INoteCommunityInfo[]> = {};
-        for (let noteCommunityInfo of noteCommunityMappings.noteCommunityInfoList) {
-            const communityPrivateKey = communityPrivateKeyMap[noteCommunityInfo.communityUri];
-            const communityInfo = communityInfoMap[noteCommunityInfo.communityUri];
-            if (!communityInfo) continue;
-            if (communityInfo.membershipType === MembershipType.Open) continue;
-            let postPrivateKey = await this.decryptPostPrivateKeyForCommunity({
-                event: noteCommunityInfo.eventData, 
-                selfPubkey: options.pubKey, 
-                communityUri: noteCommunityInfo.communityUri, 
-                communityPublicKey: communityInfo.scpData.publicKey, 
-                communityPrivateKey
-            });
-            if (postPrivateKey) {
-                noteIdToPrivateKey[noteCommunityInfo.eventData.id] = postPrivateKey;
-            }
-            else {
-                if (communityInfo.privateRelay) {
-                    relayToNotesMap[communityInfo.privateRelay] = relayToNotesMap[communityInfo.privateRelay] || [];
-                    relayToNotesMap[communityInfo.privateRelay].push(noteCommunityInfo);
-                }
-                else if (options.gatekeeperUrl) {
-                    relayToNotesMap[options.gatekeeperUrl] = relayToNotesMap[options.gatekeeperUrl] || [];
-                    relayToNotesMap[options.gatekeeperUrl].push(noteCommunityInfo);
-                }
-            }
-        }
-        if (Object.keys(relayToNotesMap).length > 0) {
-            for (let relay in relayToNotesMap) {
-                const noteIds = relayToNotesMap[relay].map(v => v.eventData.id);
-                const signature = await options.getSignature(options.message);
-                const authHeader = SocialUtilsManager.constructAuthHeader(this._privateKey);
-                let bodyData = {
-                    noteIds: noteIds.join(','),
-                    message: options.message,
-                    signature: signature
-                };
-                let gatekeeperUrl = relay;
-                if (!gatekeeperUrl.endsWith('/communities')) {
-                    gatekeeperUrl = `${gatekeeperUrl}/communities`;
-                }
-                let url = `${gatekeeperUrl}/post-keys`;
-                let response = await fetch(url, {
+        };
+        
+        const fetchFromRelay = async (
+            relay: string, 
+            notes: INoteCommunityInfo[]
+        ): Promise<Record<string, string>> => {
+            const noteIds = notes.map(v => v.eventData.id);
+            const signature = await options.getSignature(options.message);
+            const authHeader = SocialUtilsManager.constructAuthHeader(this._privateKey);
+            
+            let gatekeeperUrl = relay.endsWith('/communities') ? relay : `${relay}/communities`;
+            
+            try {
+                let response = await fetch(`${gatekeeperUrl}/post-keys`, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': authHeader
                     },
-                    body: JSON.stringify(bodyData)
+                    body: JSON.stringify({
+                        noteIds: noteIds.join(','),
+                        message: options.message,
+                        signature: signature
+                    })
                 });
+                
                 let result = await response.json();
-                if (result.success) {
-                    noteIdToPrivateKey = {
-                        ...noteIdToPrivateKey,
-                        ...result.data
-                    };
-                }
+                return result.success ? result.data : {};
+            } catch (error) {
+                console.error(`Error fetching from ${relay}:`, error);
+                return {};
+            }
+        };
+        
+        const noteCommunityMappings = await this.createNoteCommunityMappings(options.notes);
+        if (noteCommunityMappings.noteCommunityInfoList.length === 0) return {};
+        
+        const communityInfoMap: Record<string, ICommunityInfo> = {};
+        const communityPrivateKeyMap: Record<string, string> = {};
+        const relayToNotesMap: Record<string, INoteCommunityInfo[]> = {};
+        
+        for (let communityInfo of noteCommunityMappings.communityInfoList) {
+            communityInfoMap[communityInfo.communityUri] = communityInfo;
+            if (communityInfo.membershipType !== MembershipType.Open) {
+                const privateKey = await this.retrieveCommunityPrivateKey(communityInfo, this._privateKey);
+                if (privateKey) communityPrivateKeyMap[communityInfo.communityUri] = privateKey;
             }
         }
+        
+        for (let noteInfo of noteCommunityMappings.noteCommunityInfoList) {
+            const communityInfo = communityInfoMap[noteInfo.communityUri];
+            if (!communityInfo || communityInfo.membershipType === MembershipType.Open) continue;
+            
+            const postKey = await this.decryptPostPrivateKeyForCommunity({
+                event: noteInfo.eventData,
+                selfPubkey: options.pubKey,
+                communityUri: noteInfo.communityUri,
+                communityPublicKey: communityInfo.scpData.publicKey,
+                communityPrivateKey: communityPrivateKeyMap[noteInfo.communityUri]
+            });
+            
+            if (postKey) {
+                noteIdToPrivateKey[noteInfo.eventData.id] = postKey;
+            } else {
+                addToRelayMap(relayToNotesMap, noteInfo, communityInfo);
+            }
+        }
+        
+        const relayFetches = Object.entries(relayToNotesMap).map(
+            ([relay, notes]) => fetchFromRelay(relay, notes)
+        );
+        
+        const relayResults = await Promise.all(relayFetches);
+        relayResults.forEach(result => {
+            noteIdToPrivateKey = { ...noteIdToPrivateKey, ...result };
+        });
+        
         return noteIdToPrivateKey;
     }
 
