@@ -8433,7 +8433,10 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
         }
         async fetchVerifiedIdentityClaimsByTelegram(options) {
             const { username } = options;
-            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-verified-identity-claims-by-telegram', username);
+            let msg = {
+                username
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-verified-identity-claims-by-telegram', msg);
             const results = [];
             for (let item of fetchEventsResponse.data) {
                 results.push({

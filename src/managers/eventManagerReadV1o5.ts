@@ -1108,7 +1108,10 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
 
     async fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram) {
         const { username } = options;
-        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-verified-identity-claims-by-telegram', username);
+        let msg = {
+            username
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('fetch-verified-identity-claims-by-telegram', msg);
         const results: IIdentityClaimResult[] = [];
         for (let item of fetchEventsResponse.data) {
             results.push({
