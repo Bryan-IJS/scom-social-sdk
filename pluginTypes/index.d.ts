@@ -2071,7 +2071,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
     import { Nip19 } from "@scom/scom-social-sdk/core/index.ts";
     import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore, IUserCommunityScoreLog } from "@scom/scom-social-sdk/interfaces/community.ts";
     import { IAllUserRelatedChannels } from "@scom/scom-social-sdk/interfaces/channel.ts";
-    import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse } from "@scom/scom-social-sdk/interfaces/common.ts";
+    import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse, IdentityPlatform } from "@scom/scom-social-sdk/interfaces/common.ts";
     import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "@scom/scom-social-sdk/interfaces/marketplace.ts";
     export interface IFetchNotesOptions {
         authors?: string[];
@@ -2323,6 +2323,10 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         interface IFetchVerifiedIdentityClaimsByTelegram {
             username: string;
         }
+        interface IVerifyIdentityAvailability {
+            platform: IdentityPlatform;
+            identity: string;
+        }
     }
     export interface ISocialEventManagerReadResult {
         error?: string;
@@ -2396,6 +2400,7 @@ declare module "@scom/scom-social-sdk/interfaces/eventManagerRead.ts" {
         fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
         fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
         fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
+        verifyIdentityAvailability(options: SocialEventManagerReadOptions.IVerifyIdentityAvailability): Promise<boolean>;
     }
 }
 /// <amd-module name="@scom/scom-social-sdk/interfaces/eventManagerWrite.ts" />
@@ -2993,6 +2998,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerRead.ts" {
         fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<any[]>;
         fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<any[]>;
         fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<any[]>;
+        verifyIdentityAvailability(options: SocialEventManagerReadOptions.IVerifyIdentityAvailability): Promise<boolean>;
     }
     export { NostrEventManagerRead };
 }
@@ -3080,6 +3086,7 @@ declare module "@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts" {
         fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
         fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
         fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
+        verifyIdentityAvailability(options: SocialEventManagerReadOptions.IVerifyIdentityAvailability): Promise<any>;
     }
     export { NostrEventManagerReadV1o5 };
 }
@@ -3153,7 +3160,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/system.ts" {
 }
 /// <amd-module name="@scom/scom-social-sdk/managers/dataManager/index.ts" />
 declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
-    import { BuyerOrderStatus, CommunityRole, IAgentInfo, ICalendarEventDetailInfo, ICalendarEventInfo, IChannelInfo, ICheckIfUserHasAccessToCommunityOptions, ICheckRelayStatusResult, ICommunity, ICommunityDetailMetadata, ICommunityInfo, ICommunityLeaderboard, ICommunityMember, ICommunityPostScpData, ICommunityProductInfo, ICommunityStallInfo, ICommunitySubscription, IConversationPath, ICurrency, IDecryptPostPrivateKeyForCommunityOptions, IEthWalletAccountsInfo, IFetchPaymentActivitiesOptions, IIdentityClaim, IIdentityVerification, ILocationCoordinates, ILongFormContentInfo, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall, IMessageContactInfo, INewCommunityInfo, INostrEvent, INostrMetadata, INostrMetadataContent, INoteActions, INoteCommunityInfo, INoteInfo, INoteInfoExtended, IPaymentActivityV2, IPostStats, IRegion, IRetrieveChannelMessageKeysOptions, IRetrieveCommunityPostKeysByNoteEventsOptions, IRetrieveCommunityPostKeysOptions, IRetrieveCommunityThreadPostKeysOptions, IRetrievedBuyerOrder, IRetrievedMarketplaceOrder, ISendTempMessageOptions, ISocialDataManagerConfig, ISocialEventManagerRead, ISocialEventManagerWrite, ITrendingCommunityInfo, IUpdateCalendarEventInfo, IUpdateCommunitySubscription, IUserActivityStats, IUserProfile, SellerOrderStatus, SocialDataManagerOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
+    import { BuyerOrderStatus, CommunityRole, IAgentInfo, ICalendarEventDetailInfo, ICalendarEventInfo, IChannelInfo, ICheckIfUserHasAccessToCommunityOptions, ICheckRelayStatusResult, ICommunity, ICommunityDetailMetadata, ICommunityInfo, ICommunityLeaderboard, ICommunityMember, ICommunityPostScpData, ICommunityProductInfo, ICommunityStallInfo, ICommunitySubscription, IConversationPath, ICurrency, IDecryptPostPrivateKeyForCommunityOptions, IdentityPlatform, IEthWalletAccountsInfo, IFetchPaymentActivitiesOptions, IIdentityClaim, IIdentityVerification, ILocationCoordinates, ILongFormContentInfo, IMarketplaceOrderUpdateInfo, IMarketplaceProduct, IMarketplaceStall, IMessageContactInfo, INewCommunityInfo, INostrEvent, INostrMetadata, INostrMetadataContent, INoteActions, INoteCommunityInfo, INoteInfo, INoteInfoExtended, IPaymentActivityV2, IPostStats, IRegion, IRetrieveChannelMessageKeysOptions, IRetrieveCommunityPostKeysByNoteEventsOptions, IRetrieveCommunityPostKeysOptions, IRetrieveCommunityThreadPostKeysOptions, IRetrievedBuyerOrder, IRetrievedMarketplaceOrder, ISendTempMessageOptions, ISocialDataManagerConfig, ISocialEventManagerRead, ISocialEventManagerWrite, ITrendingCommunityInfo, IUpdateCalendarEventInfo, IUpdateCommunitySubscription, IUserActivityStats, IUserProfile, SellerOrderStatus, SocialDataManagerOptions } from "@scom/scom-social-sdk/interfaces/index.ts";
     class SocialDataManager {
         private _writeRelays;
         private _publicIndexingRelay;
@@ -3412,6 +3419,7 @@ declare module "@scom/scom-social-sdk/managers/dataManager/index.ts" {
         submitIdentityVerification(verification: IIdentityVerification): Promise<import("@scom/scom-social-sdk/interfaces/eventManagerWrite.ts").ISocialEventManagerWriteResult>;
         fetchIdentityClaims(pubkey: string): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").IIdentityClaimResult[]>;
         fetchVerifiedIdentityClaimsByTelegram(username: string): Promise<import("@scom/scom-social-sdk/interfaces/misc.ts").IIdentityClaimResult[]>;
+        verifyIdentityAvailability(platform: IdentityPlatform, identity: string): Promise<boolean>;
         fetchRegions(): Promise<IRegion[]>;
         fetchCurrencies(): Promise<ICurrency[]>;
         fetchCryptocurrencies(): Promise<import("@scom/scom-social-sdk/interfaces/marketplace.ts").ICryptocurrency[]>;

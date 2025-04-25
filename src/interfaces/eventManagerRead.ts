@@ -2,7 +2,7 @@ import { IFetchPaymentActivitiesOptions, IIdentityClaimResult, IPaymentActivity,
 import { Nip19 } from "../core/index";
 import { ICommunityBasicInfo, ICommunityInfo, ICommunityMember, IUserCommunityScore, IUserCommunityScoreLog } from "./community";
 import { IAllUserRelatedChannels } from "./channel";
-import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse } from "./common";
+import { INostrCommunicationManager, INostrRestAPIManager, INostrEvent, INostrFetchEventsResponse, IdentityPlatform } from "./common";
 import { BuyerOrderStatus, IReservation, SellerOrderStatus } from "./marketplace";
 
 export interface IFetchNotesOptions {
@@ -257,6 +257,11 @@ export namespace SocialEventManagerReadOptions {
 	export interface IFetchVerifiedIdentityClaimsByTelegram {
 		username: string;
 	}
+
+	export interface IVerifyIdentityAvailability {
+		platform: IdentityPlatform;
+        identity: string;
+	}
 }
 
 export interface ISocialEventManagerReadResult {
@@ -334,6 +339,7 @@ export interface ISocialEventManagerRead {
 	fetchUserAgents(options: SocialEventManagerReadOptions.IFetchUserAgents): Promise<INostrEvent[]>;
 	fetchIdentityClaims(options: SocialEventManagerReadOptions.IFetchIdentityClaims): Promise<IIdentityClaimResult[]>;
 	fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram): Promise<IIdentityClaimResult[]>;
+	verifyIdentityAvailability(options: SocialEventManagerReadOptions.IVerifyIdentityAvailability): Promise<boolean>;
 	// fetchMetadata(options: IFetchMetadataOptions): Promise<INostrEvent[]>;
     // fetchReplies(options: IFetchRepliesOptions): Promise<INostrEvent[]>;
     // fetchFollowing(npubs: string[]): Promise<INostrEvent[]>;

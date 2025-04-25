@@ -7363,6 +7363,9 @@ define("@scom/scom-social-sdk/managers/eventManagerRead.ts", ["require", "export
         async fetchVerifiedIdentityClaimsByTelegram(options) {
             return []; // Not supported
         }
+        async verifyIdentityAvailability(options) {
+            return false; // Not supported
+        }
     }
     exports.NostrEventManagerRead = NostrEventManagerRead;
 });
@@ -8449,6 +8452,15 @@ define("@scom/scom-social-sdk/managers/eventManagerReadV1o5.ts", ["require", "ex
                 });
             }
             return results;
+        }
+        async verifyIdentityAvailability(options) {
+            const { platform, identity } = options;
+            let msg = {
+                platform: platform,
+                identity: identity
+            };
+            const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('verify-identity-availability', msg);
+            return fetchEventsResponse.data?.claimable;
         }
     }
     exports.NostrEventManagerReadV1o5 = NostrEventManagerReadV1o5;
@@ -11755,6 +11767,10 @@ define("@scom/scom-social-sdk/managers/dataManager/index.ts", ["require", "expor
         async fetchVerifiedIdentityClaimsByTelegram(username) {
             const claims = await this._socialEventManagerRead.fetchVerifiedIdentityClaimsByTelegram({ username });
             return claims;
+        }
+        async verifyIdentityAvailability(platform, identity) {
+            const claimable = await this._socialEventManagerRead.verifyIdentityAvailability({ platform, identity });
+            return claimable;
         }
         async fetchRegions() {
             return this.systemDataManager.fetchRegions();
