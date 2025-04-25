@@ -1125,6 +1125,16 @@ class NostrEventManagerReadV1o5 implements ISocialEventManagerRead {
         }
         return results;
     }
+
+    async verifyIdentityAvailability(options: SocialEventManagerReadOptions.IVerifyIdentityAvailability) {
+        const { platform, identity } = options;
+        let msg: any = {
+            platform: platform,
+            identity: identity
+        };
+        const fetchEventsResponse = await this.fetchEventsFromAPIWithAuth('verify-identity-availability', msg);
+        return fetchEventsResponse.data?.claimable;
+    }
 }
 
 export {

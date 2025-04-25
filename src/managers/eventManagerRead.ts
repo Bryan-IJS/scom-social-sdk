@@ -1152,6 +1152,10 @@ class NostrEventManagerRead implements ISocialEventManagerRead {
     async fetchVerifiedIdentityClaimsByTelegram(options: SocialEventManagerReadOptions.IFetchVerifiedIdentityClaimsByTelegram) {
         return []; // Not supported
     }
+
+    async verifyIdentityAvailability(options: SocialEventManagerReadOptions.IVerifyIdentityAvailability) {
+        return false; // Not supported
+    }
 }
 
 export {
